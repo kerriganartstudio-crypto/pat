@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kerrigan Studio - OS 2001 Master Portfolio</title>
+    <style>
+        :root { --win-blue: #0054e3; --win-blue-light: #27c1ff; }
+        
+        body { 
+            margin: 0; overflow: hidden; font-family: 'Tahoma', sans-serif;
+            background: #3a6ea5 url('https://upload.wikimedia.org/wikipedia/en/2/27/Bliss_%28Windows_XP%29.png') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        /* --- 4th WALL MATRIX WARP --- */
+        .warp-effect {
+            animation: warpSuck 1.2s forwards cubic-bezier(0.6, -0.28, 0.735, 0.045);
+            pointer-events: none;
+        }
+        @keyframes warpSuck {
+            0% { transform: scale(1); filter: blur(0px); opacity: 1; }
+            50% { transform: scale(1.1) rotate(2deg); filter: blur(5px); }
+            100% { transform: scale(0); filter: blur(20px) brightness(5); opacity: 0; }
+        }
+
+        /* --- SYSTEM COMPONENTS --- */
+        #boot-screen { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; cursor: pointer; }
+        #crt-overlay { position: fixed; inset: 0; z-index: 9999; pointer-events: none; background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.1) 50%), linear-gradient(90deg, rgba(255,0,0,0.02), rgba(0,255,0,0.01), rgba(0,0,255,0.02)); background-size: 100% 3px, 3px 100%; }
+
+        #desktop { height: 100vh; padding: 20px; display: flex; flex-direction: column; flex-wrap: wrap; align-content: flex-start; }
+        .desktop-icon { width: 85px; margin: 10px; text-align: center; color: white; cursor: pointer; text-shadow: 1px 1px 2px #000; font-size: 11px; }
+        .desktop-icon img { width: 42px; height: 42px; display: block; margin: 0 auto 5px; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.5)); }
+        .desktop-icon:hover div { background: rgba(255,255,255,0.3); border-radius: 3px; }
+
+        /* --- WINDOWS --- */
+        .os-window { position: absolute; display: none; background: #ece9d8; border: 3px solid var(--win-blue); border-radius: 8px 8px 0 0; box-shadow: 5px 5px 25px rgba(0,0,0,0.5); z-index: 100; }
+        .window-header { background: linear-gradient(to right, #0058e6, #2881fa); color: white; padding: 4px 8px; font-weight: bold; font-size: 13px; display: flex; justify-content: space-between; cursor: move; }
+        .close-btn { background: #e81123; color: white; border: 1px solid #fff; cursor: pointer; font-weight: bold; }
+
+        /* --- GUESTBOOK APP --- */
+        #guestbook-content { padding: 10px; background: #fff; height: 300px; width: 350px; overflow-y: auto; font-size: 12px; border: 2px inset #eee; }
+        .guest-msg { border-bottom: 1px solid #eee; padding: 5px; margin-bottom: 5px; }
+
+        /* --- TCG ENGINE --- */
+        .card-container { perspective: 1200px; width: 320px; height: 460px; margin: 10px auto; }
+        .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; }
+        .is-flipped { transform: rotateY(180deg); }
+        .card-front, .card-back { position: absolute; inset: 0; backface-visibility: hidden; border-radius: 15px; border: 2px solid #333; overflow: hidden; background: #000; }
+        .card-back { transform: rotateY(180deg); }
+        .holo { position: absolute; inset: 0; z-index: 2; background: linear-gradient(125deg, transparent 15%, rgba(255,255,255,0.3) 50%, transparent 70%); mix-blend-mode: color-dodge; pointer-events: none; }
+        .crack { position: absolute; inset: 0; z-index: 20; background: url('https://i.imgur.com/83pZ33l.png') center/cover; opacity: 0; pointer-events: none; }
+        
+        /* --- TASKBAR --- */
+        #taskbar { position: absolute; bottom: 0; width: 100%; height: 30px; background: linear-gradient(to bottom, #245edb, #1a4299); z-index: 9995; display: flex; justify-content: space-between; align-items: center; }
+        #matrix-overlay { position: fixed; inset: 0; background: black; z-index: 99999; display: none; }
+        img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    </style>
+</head>
+<body id="main-os">
+
+    <audio id="bootSound" src="https://www.myinstants.com/media/sounds/windows-xp-startup.mp3"></audio>
+    <audio id="flipSound" src="https://www.soundjay.com/buttons/button-20.mp3"></audio>
+
+    <div id="boot-screen" onclick="boot()">
+        <h2>KERRIGAN OS v2001</h2>
+        <p>[ CLICK TO BOOT ]</p>
+    </div>
+
+    <div id="crt-overlay"></div>
+
+    <div id="desktop">
+        <div class="desktop-icon" ondblclick="openWin('tcg-window')">
+            <img src="tcgicon.PNG" onerror="this.src='https://img.icons8.com/color/48/000000/tarot-cards.png'">
+            <div>Kerrigan TCG</div>
+        </div>
+        <div class="desktop-icon" ondblclick="triggerWarp()">
+            <img src="https://img.icons8.com/color/48/000000/rabbit.png">
+            <div style="color:#0f0; font-weight:bold;">White_Rabbit.exe</div>
+        </div>
+        <div class="desktop-icon" ondblclick="openWin('guestbook-window')">
+            <img src="https://img.icons8.com/color/48/000000/edit-property.png">
+            <div>Guestbook.exe</div>
+        </div>
+    </div>
+
+    <div class="os-window" id="guestbook-window" style="top:20%; left:10%;">
+        <div class="window-header" id="gb-drag"><span>Guestbook.exe</span><button class="close-btn" onclick="closeWin('guestbook-window')">X</button></div>
+        <div style="padding:10px;">
+            <div id="guestbook-content"></div>
+            <div style="margin-top:10px;">
+                <input type="text" id="gb-name" placeholder="Your Name" style="width:80px;">
+                <input type="text" id="gb-msg" placeholder="Leave a message..." style="width:180px;">
+                <button onclick="addEntry()">Post</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="os-window" id="tcg-window" style="top:10%; left:30%;">
+        <div class="window-header" id="tcg-drag"><span>Kerrigan Trading Card</span><button class="close-btn" onclick="closeWin('tcg-window')">X</button></div>
+        <div style="padding:15px;">
+            <div class="card-container" onclick="flip(this)">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <div class="holo"></div><div class="crack" id="glassCrack"></div>
+                        <img src="fronttcg.png" alt="Front">
+                    </div>
+                    <div class="card-back"><img src="tcgicon.PNG" alt="Back"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="taskbar">
+        <button style="background:#388e3c; color:white; font-weight:bold; height:100%; border:none; padding:0 15px; cursor:pointer;">start</button>
+        <div id="clock" style="color:white; padding-right:15px; font-size:11px;"></div>
+    </div>
+
+    <div id="matrix-overlay"><canvas id="m-canvas"></canvas></div>
+
+    <script>
+        function boot() { document.getElementById('bootSound').play(); document.getElementById('boot-screen').style.display='none'; }
+        function openWin(id) { document.getElementById(id).style.display='block'; }
+        function closeWin(id) { document.getElementById(id).style.display='none'; }
+        function flip(el) { el.querySelector('.card-inner').classList.toggle('is-flipped'); document.getElementById('flipSound').play(); }
+
+        // Guestbook Logic
+        function addEntry() {
+            const name = document.getElementById('gb-name').value || "Anonymous";
+            const msg = document.getElementById('gb-msg').value;
+            if(!msg) return;
+            const container = document.getElementById('guestbook-content');
+            container.innerHTML += `<div class="guest-msg"><strong>${name}:</strong> ${msg}</div>`;
+            document.getElementById('gb-msg').value = "";
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Warp Logic
+        function triggerWarp() {
+            document.getElementById('main-os').classList.add('warp-effect');
+            setTimeout(() => { document.getElementById('matrix-overlay').style.display='block'; startMatrix(); }, 1100);
+        }
+
+        function startMatrix() {
+            const c = document.getElementById('m-canvas'); const ctx = c.getContext('2d');
+            c.width = window.innerWidth; c.height = window.innerHeight;
+            const drops = Array(Math.floor(c.width/20)).fill(1);
+            setInterval(() => {
+                ctx.fillStyle = "rgba(0,0,0,0.05)"; ctx.fillRect(0,0,c.width,c.height);
+                ctx.fillStyle = "#0F0"; ctx.font = "20px monospace";
+                drops.forEach((y, i) => {
+                    ctx.fillText(Math.floor(Math.random()*2), i*20, y*20);
+                    if(y*20 > c.height && Math.random() > 0.975) drops[i] = 0;
+                    drops[i]++;
+                });
+            }, 33);
+        }
+
+        // Draggables
+        function drag(w, h) {
+            let p1=0, p2=0, p3=0, p4=0;
+            h.onmousedown = (e) => {
+                p3=e.clientX; p4=e.clientY;
+                document.onmouseup = () => { document.onmouseup=null; document.onmousemove=null; };
+                document.onmousemove = (e) => {
+                    p1=p3-e.clientX; p2=p4-e.clientY; p3=e.clientX; p4=e.clientY;
+                    w.style.top=(w.offsetTop-p2)+"px"; w.style.left=(w.offsetLeft-p1)+"px";
+                };
+            };
+        }
+        drag(document.getElementById('tcg-window'), document.getElementById('tcg-drag'));
+        drag(document.getElementById('guestbook-window'), document.getElementById('gb-drag'));
+
+        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }, 1000);
+    </script>
+</body>
+</html>
