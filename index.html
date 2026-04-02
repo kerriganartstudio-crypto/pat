@@ -6,10 +6,15 @@
     <style>
         :root { --win-blue: #0054e3; --win-blue-light: #27c1ff; }
         
-        body { 
-            margin: 0; overflow: hidden; font-family: 'Tahoma', sans-serif;
+        /* 1. We make the main body black so the Matrix has a dark background */
+        body { margin: 0; overflow: hidden; font-family: 'Tahoma', sans-serif; background: #000; }
+
+        /* 2. We put the OS in its own container so it can shrink without taking the Matrix with it */
+        #os-workspace {
+            position: absolute; inset: 0;
             background: #3a6ea5 url('https://upload.wikimedia.org/wikipedia/en/2/27/Bliss_%28Windows_XP%29.png') no-repeat center center fixed;
             background-size: cover;
+            transform-origin: center center;
         }
 
         /* --- 4th WALL MATRIX WARP --- */
@@ -59,107 +64,109 @@
         .start-item { padding: 10px; font-size: 12px; cursor: pointer; border-bottom: 1px solid #eee; color: #333; }
         .start-item:hover { background: #2f71cd; color: white; }
 
-        #matrix-overlay { position: fixed; inset: 0; background: black; z-index: 99999; display: none; }
+        #matrix-overlay { position: fixed; inset: 0; z-index: 99999; display: none; }
         #bsod { position: fixed; inset: 0; background: #0000aa; color: white; padding: 50px; font-family: "Lucida Console", monospace; display: none; z-index: 99999; }
         img { width: 100%; height: 100%; object-fit: cover; display: block; }
     </style>
 </head>
-<body id="main-os">
+<body>
 
     <audio id="bootSound" src="https://www.myinstants.com/media/sounds/windows-xp-startup.mp3"></audio>
     <audio id="flipSound" src="https://www.soundjay.com/buttons/button-20.mp3"></audio>
     <audio id="crackSound" src="https://www.soundjay.com/misc/sounds/glass-break-1.mp3"></audio>
 
-    <div id="boot-screen" onclick="boot()">
-        <h2>KERRIGAN OS v2001</h2>
-        <p style="animation: blink 1s infinite;">[ CLICK TO BOOT ]</p>
-    </div>
+    <div id="matrix-overlay"><canvas id="m-canvas"></canvas></div>
 
-    <div id="crt-overlay"></div>
+    <div id="os-workspace">
+        <div id="boot-screen" onclick="boot()">
+            <h2>KERRIGAN OS v2001</h2>
+            <p style="animation: blink 1s infinite;">[ CLICK TO BOOT ]</p>
+        </div>
 
-    <div id="desktop">
-        <div class="desktop-icon" ondblclick="openWin('tcg-window')">
-            <img src="tcgicon.PNG" onerror="this.src='https://img.icons8.com/color/48/000000/tarot-cards.png'">
-            <div>Kerrigan TCG</div>
-        </div>
-        <div class="desktop-icon" ondblclick="triggerWarp()">
-            <img src="https://img.icons8.com/color/48/000000/rabbit.png">
-            <div style="color:#0f0; font-weight:bold;">White_Rabbit.exe</div>
-        </div>
-        <div class="desktop-icon" ondblclick="openWin('guestbook-window')">
-            <img src="https://img.icons8.com/color/48/000000/edit-property.png">
-            <div>Guestbook.exe</div>
-        </div>
-        <div class="desktop-icon" ondblclick="openWin('paint-window')">
-            <img src="https://img.icons8.com/color/48/000000/ms-paint.png">
-            <div>Paint.exe</div>
-        </div>
-        <div class="desktop-icon" ondblclick="downloadResume()">
-            <img src="https://img.icons8.com/color/48/000000/download--v1.png">
-            <div style="color:#ffcc00; font-weight:bold;">Get_Resume.exe</div>
-        </div>
-    </div>
+        <div id="crt-overlay"></div>
 
-    <div class="os-window" id="tcg-window" style="top:10%; left:30%;">
-        <div class="window-header" id="tcg-drag"><span>Kerrigan Trading Card</span><button class="close-btn" onclick="closeWin('tcg-window')">X</button></div>
-        <div style="padding:15px;">
-            <div class="card-container" onclick="interactTcg(this)">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <div class="holo"></div><div class="burn"></div><div class="crack" id="glassCrack"></div>
-                        <img src="fronttcg.png" alt="Front">
+        <div id="desktop">
+            <div class="desktop-icon" ondblclick="openWin('tcg-window')">
+                <img src="tcgicon.PNG" onerror="this.src='https://img.icons8.com/color/48/000000/tarot-cards.png'">
+                <div>Kerrigan TCG</div>
+            </div>
+            <div class="desktop-icon" ondblclick="triggerWarp()">
+                <img src="https://img.icons8.com/color/48/000000/rabbit.png">
+                <div style="color:#0f0; font-weight:bold;">White_Rabbit.exe</div>
+            </div>
+            <div class="desktop-icon" ondblclick="openWin('guestbook-window')">
+                <img src="https://img.icons8.com/color/48/000000/edit-property.png">
+                <div>Guestbook.exe</div>
+            </div>
+            <div class="desktop-icon" ondblclick="openWin('paint-window')">
+                <img src="https://img.icons8.com/color/48/000000/ms-paint.png">
+                <div>Paint.exe</div>
+            </div>
+            <div class="desktop-icon" ondblclick="downloadResume()">
+                <img src="https://img.icons8.com/color/48/000000/download--v1.png">
+                <div style="color:#ffcc00; font-weight:bold;">Get_Resume.exe</div>
+            </div>
+        </div>
+
+        <div class="os-window" id="tcg-window" style="top:10%; left:30%;">
+            <div class="window-header" id="tcg-drag"><span>Kerrigan Trading Card</span><button class="close-btn" onclick="closeWin('tcg-window')">X</button></div>
+            <div style="padding:15px;">
+                <div class="card-container" onclick="interactTcg(this)">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="holo"></div><div class="burn"></div><div class="crack" id="glassCrack"></div>
+                            <img src="fronttcg.png" alt="Front">
+                        </div>
+                        <div class="card-back"><img src="tcgicon.PNG" alt="Back"></div>
                     </div>
-                    <div class="card-back"><img src="tcgicon.PNG" alt="Back"></div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="os-window" id="guestbook-window" style="top:20%; left:10%;">
-        <div class="window-header" id="gb-drag"><span>Guestbook.exe</span><button class="close-btn" onclick="closeWin('guestbook-window')">X</button></div>
-        <div style="padding:10px;">
-            <div id="guestbook-content"></div>
-            <div style="margin-top:10px;">
-                <input type="text" id="gb-name" placeholder="Your Name" style="width:80px;">
-                <input type="text" id="gb-msg" placeholder="Leave a message..." style="width:180px;">
-                <button onclick="addEntry()">Post</button>
+        <div class="os-window" id="guestbook-window" style="top:20%; left:10%;">
+            <div class="window-header" id="gb-drag"><span>Guestbook.exe</span><button class="close-btn" onclick="closeWin('guestbook-window')">X</button></div>
+            <div style="padding:10px;">
+                <div id="guestbook-content"></div>
+                <div style="margin-top:10px;">
+                    <input type="text" id="gb-name" placeholder="Your Name" style="width:80px;">
+                    <input type="text" id="gb-msg" placeholder="Leave a message..." style="width:180px;">
+                    <button onclick="addEntry()">Post</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="os-window" id="paint-window" style="top:15%; left:40%;">
-        <div class="window-header" id="paint-drag"><span>Paint.exe</span><button class="close-btn" onclick="closeWin('paint-window')">X</button></div>
-        <div class="paint-tools">
-            <input type="color" id="p-color" value="#000000">
-            <button onclick="clearPaint()">Clear</button>
-            <button onclick="saveArt()" style="color:blue; font-weight:bold;">Save Art</button>
+        <div class="os-window" id="paint-window" style="top:15%; left:40%;">
+            <div class="window-header" id="paint-drag"><span>Paint.exe</span><button class="close-btn" onclick="closeWin('paint-window')">X</button></div>
+            <div class="paint-tools">
+                <input type="color" id="p-color" value="#000000">
+                <button onclick="clearPaint()">Clear</button>
+                <button onclick="saveArt()" style="color:blue; font-weight:bold;">Save Art</button>
+            </div>
+            <canvas id="paint-canvas" width="400" height="300"></canvas>
         </div>
-        <canvas id="paint-canvas" width="400" height="300"></canvas>
-    </div>
 
-    <div class="os-window" id="note-window" style="top:25%; left:20%;">
-        <div class="window-header" id="note-drag"><span id="note-title">Notepad</span><button class="close-btn" onclick="closeWin('note-window')">X</button></div>
-        <textarea style="width:400px; height:300px; font-family:monospace; padding:15px; border:none; outline:none; font-size:14px;" id="note-content" readonly></textarea>
-    </div>
+        <div class="os-window" id="note-window" style="top:25%; left:20%;">
+            <div class="window-header" id="note-drag"><span id="note-title">Notepad</span><button class="close-btn" onclick="closeWin('note-window')">X</button></div>
+            <textarea style="width:400px; height:300px; font-family:monospace; padding:15px; border:none; outline:none; font-size:14px;" id="note-content" readonly></textarea>
+        </div>
 
-    <div id="bsod">
-        <p>A problem has been detected and Windows has been shut down...</p>
-        <p>*** STOP: 0x000000ED (KERRIGAN_TCG_OVERLOAD)</p>
-    </div>
+        <div id="bsod">
+            <p>A problem has been detected and Windows has been shut down...</p>
+            <p>*** STOP: 0x000000ED (KERRIGAN_TCG_OVERLOAD)</p>
+        </div>
 
-    <div id="taskbar">
-        <button onclick="toggleStart()" style="background:#388e3c; color:white; font-weight:bold; height:100%; border:none; padding:0 15px; cursor:pointer; font-style:italic;">start</button>
-        <div id="clock" style="color:white; padding-right:15px; font-size:11px;"></div>
-    </div>
+        <div id="taskbar">
+            <button onclick="toggleStart()" style="background:#388e3c; color:white; font-weight:bold; height:100%; border:none; padding:0 15px; cursor:pointer; font-style:italic;">start</button>
+            <div id="clock" style="color:white; padding-right:15px; font-size:11px;"></div>
+        </div>
 
-    <div id="start-menu">
-        <div style="background: linear-gradient(to bottom, #0058e6, #125eed); color:white; padding:10px; font-weight:bold; border-bottom:2px solid #f98411;">Kerrigan Studio</div>
-        <div class="start-item" onclick="loadDoc('Bio.txt')">Bio.txt</div>
-        <div class="start-item" onclick="loadDoc('Resume.txt')">Resume.txt</div>
-        <div class="start-item" onclick="downloadResume()" style="background:#fffbe6;"><strong>💾 Download Resume</strong></div>
+        <div id="start-menu">
+            <div style="background: linear-gradient(to bottom, #0058e6, #125eed); color:white; padding:10px; font-weight:bold; border-bottom:2px solid #f98411;">Kerrigan Studio</div>
+            <div class="start-item" onclick="loadDoc('Bio.txt')">Bio.txt</div>
+            <div class="start-item" onclick="loadDoc('Resume.txt')">Resume.txt</div>
+            <div class="start-item" onclick="downloadResume()" style="background:#fffbe6;"><strong>💾 Download Resume</strong></div>
+        </div>
     </div>
-
-    <div id="matrix-overlay"><canvas id="m-canvas"></canvas></div>
 
     <script>
         const docs = {
@@ -188,7 +195,6 @@
             if(clicks >= 10) document.getElementById('bsod').style.display = 'block';
         }
 
-        // Guestbook
         function addEntry() {
             const name = document.getElementById('gb-name').value || "Anonymous";
             const msg = document.getElementById('gb-msg').value;
@@ -199,7 +205,6 @@
             container.scrollTop = container.scrollHeight;
         }
 
-        // Resume Download
         function downloadResume() {
             const blob = new Blob([docs['Resume.txt']], {type: 'text/plain'});
             const link = document.createElement('a');
@@ -208,9 +213,9 @@
             link.click();
         }
 
-        // Matrix Warp
+        // CORRECTED WARP LOGIC
         function triggerWarp() {
-            document.getElementById('main-os').classList.add('warp-effect');
+            document.getElementById('os-workspace').classList.add('warp-effect');
             setTimeout(() => { document.getElementById('matrix-overlay').style.display='block'; startMatrix(); }, 1100);
         }
 
@@ -229,7 +234,6 @@
             }, 33);
         }
 
-        // Paint Logic
         const pCanvas = document.getElementById('paint-canvas'); const pCtx = pCanvas.getContext('2d');
         let painting = false;
         pCanvas.onmousedown = () => painting = true;
@@ -247,7 +251,6 @@
             link.href = pCanvas.toDataURL(); link.click();
         }
 
-        // Drag Logic
         function drag(w, h) {
             let p1=0, p2=0, p3=0, p4=0;
             h.onmousedown = (e) => {
