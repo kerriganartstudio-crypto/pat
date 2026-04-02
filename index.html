@@ -6,10 +6,8 @@
     <style>
         :root { --win-blue: #0054e3; --win-blue-light: #27c1ff; }
         
-        /* 1. We make the main body black so the Matrix has a dark background */
         body { margin: 0; overflow: hidden; font-family: 'Tahoma', sans-serif; background: #000; }
 
-        /* 2. We put the OS in its own container so it can shrink without taking the Matrix with it */
         #os-workspace {
             position: absolute; inset: 0;
             background: #3a6ea5 url('https://upload.wikimedia.org/wikipedia/en/2/27/Bliss_%28Windows_XP%29.png') no-repeat center center fixed;
@@ -39,10 +37,6 @@
         .window-header { background: linear-gradient(to right, #0058e6, #2881fa); color: white; padding: 4px 8px; font-weight: bold; font-size: 13px; display: flex; justify-content: space-between; cursor: move; }
         .close-btn { background: #e81123; color: white; border: 1px solid #fff; cursor: pointer; font-weight: bold; }
 
-        /* --- GUESTBOOK APP --- */
-        #guestbook-content { padding: 10px; background: #fff; height: 250px; width: 350px; overflow-y: auto; font-size: 12px; border: 2px inset #eee; }
-        .guest-msg { border-bottom: 1px solid #eee; padding: 5px; margin-bottom: 5px; }
-
         /* --- TCG ENGINE --- */
         .card-container { perspective: 1200px; width: 320px; height: 460px; margin: 10px auto; }
         .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; }
@@ -53,6 +47,10 @@
         .crack { position: absolute; inset: 0; z-index: 20; background: url('https://i.imgur.com/83pZ33l.png') center/cover; opacity: 0; pointer-events: none; }
         .burn { position: absolute; inset: 0; z-index: 11; background: radial-gradient(circle, #ff4500 10%, #ff0000 40%, #000 90%); mix-blend-mode: overlay; opacity: 0; transition: opacity 1.5s; }
         .card-container:hover .burn { opacity: 0.8; transition-delay: 3s; }
+
+        /* --- GUESTBOOK APP --- */
+        #guestbook-content { padding: 10px; background: #fff; height: 250px; width: 350px; overflow-y: auto; font-size: 12px; border: 2px inset #eee; }
+        .guest-msg { border-bottom: 1px solid #eee; padding: 5px; margin-bottom: 5px; }
 
         /* --- PAINT APP --- */
         #paint-canvas { background: #fff; border: 2px inset #eee; cursor: crosshair; display: block; }
@@ -145,9 +143,9 @@
             <canvas id="paint-canvas" width="400" height="300"></canvas>
         </div>
 
-        <div class="os-window" id="note-window" style="top:25%; left:20%;">
+        <div class="os-window" id="note-window" style="top:15%; left:20%;">
             <div class="window-header" id="note-drag"><span id="note-title">Notepad</span><button class="close-btn" onclick="closeWin('note-window')">X</button></div>
-            <textarea style="width:400px; height:300px; font-family:monospace; padding:15px; border:none; outline:none; font-size:14px;" id="note-content" readonly></textarea>
+            <textarea style="width:450px; height:350px; font-family:monospace; padding:15px; border:none; outline:none; font-size:12px;" id="note-content" readonly></textarea>
         </div>
 
         <div id="bsod">
@@ -169,9 +167,11 @@
     </div>
 
     <script>
+        // UPDATED WITH YOUR REAL RESUME TEXT
         const docs = {
-            'Bio.txt': "PATRICK KERRIGAN\nGraphic Artist\nUSMC Veteran\n\nTranslating concepts through visual narratives...",
-            'Resume.txt': "====================================\nPATRICK KERRIGAN - RESUME\n====================================\n\nEXPERIENCE\n\n[Aug 2021 - Present]\nFreelance Graphic Designer & Content Creator\nKerrigan_Studio\n\n[Oct 2006 - 2010]\nUSMC Rifleman (0311)\n\nSKILLS\n- Adobe Creative Suite\n- Video & Motion Design\n- Tactical Visual Aesthetics"
+            'Bio.txt': "====================================\nPATRICK KERRIGAN\nMultimedia Designer & USMC Veteran\n====================================\n\nMultimedia Developer and Videographer with a B.A. in Graphic Design and a background in USMC Infantry Operations. \n\nI specialize in end-to-end video production, combining technical expertise in Adobe Premiere Pro and After Effects with a disciplined, mission-first approach to workflows. \n\nExperienced in creating high-impact social-first content, motion graphics, and product marketing assets. Bringing military-grade reliability, physical stamina for location shoots, and a creative eye to the WeatherTech production team.",
+            
+            'Resume.txt': "====================================\nPATRICK KERRIGAN - RESUME\n====================================\n\nCONTACT\nEmail: kerriganartstudio@gmail.com\nPhone: 773-562-5291\nLocation: Oak Lawn, Illinois\n\nEXPERIENCE\n\n[2025 - Present]\nAK. GRAZING. CO | Content Creator\n- Developed 'social-first' vertical video strategies (Reels/Shorts) incorporating motion graphics and kinetic typography using Adobe After Effects and Premiere Pro.\n\n[2025 - Present]\nLIVENATION | Security Guard\n- Collaborate with event operations team to ensure safe & successful execution of large-scale events and concerts.\n- Monitor crowd dynamics to identify medical emergencies or aggressive behavior.\n\n[2019 - 2021]\nHINES VA HOSPITAL | Audiovisual Asst\n- Facilitated daily audiovisual operations for hospital administration, ensuring seamless communication flows for staff, patients, and directors.\n\nSKILLS\n- Video Editing & Videography\n- Graphic Design & Motion Graphics\n- Content Planning & Product Staging\n- Creativity & Communication"
         };
 
         let clicks = 0;
@@ -213,10 +213,19 @@
             link.click();
         }
 
-        // CORRECTED WARP LOGIC
+        // REDIRECT TO CANVA ADDED HERE
         function triggerWarp() {
             document.getElementById('os-workspace').classList.add('warp-effect');
-            setTimeout(() => { document.getElementById('matrix-overlay').style.display='block'; startMatrix(); }, 1100);
+            setTimeout(() => { 
+                document.getElementById('matrix-overlay').style.display='block'; 
+                startMatrix(); 
+                
+                // Wait 5 seconds in the matrix, then go to Canva Portfolio
+                setTimeout(() => {
+                    window.location.href = "https://kerriganartstudio-portfolio.my.canva.site/patrick-kerrigan-graphic-designer-2026";
+                }, 5000);
+
+            }, 1100);
         }
 
         function startMatrix() {
