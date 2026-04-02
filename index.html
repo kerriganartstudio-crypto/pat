@@ -2,281 +2,243 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Kerrigan Studio - OS 2001 Master Portfolio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kerrigan Studio - OS 2001 Master</title>
     <style>
-        :root { --win-blue: #0054e3; --win-blue-light: #27c1ff; }
-        
-        body { margin: 0; overflow: hidden; font-family: 'Tahoma', sans-serif; background: #000; }
-
-        #os-workspace {
-            position: absolute; inset: 0;
-            background: #3a6ea5 url('https://upload.wikimedia.org/wikipedia/en/2/27/Bliss_%28Windows_XP%29.png') no-repeat center center fixed;
-            background-size: cover;
-            transform-origin: center center;
+        /* --- 1. CRT & NOIR AESTHETICS --- */
+        .crt-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 9999; pointer-events: none;
+            background: 
+                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%),
+                radial-gradient(rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, 0.8) 100%);
+            background-size: 100% 4px, 100% 100%; opacity: 0.9;
         }
 
-        /* --- 4th WALL MATRIX WARP --- */
+        body {
+            background: #000; margin: 0; overflow: hidden; font-family: 'Tahoma', sans-serif;
+            filter: contrast(1.2) brightness(0.8) saturate(0.3) blur(0.4px);
+            animation: monitor-flinch 15s infinite; transition: filter 0.3s;
+        }
+
+        #os-workspace { 
+            position: absolute; inset: 0; 
+            background: #3a6ea5 url('https://upload.wikimedia.org/wikipedia/en/2/27/Bliss_%28Windows_XP%29.png') no-repeat center center fixed; 
+            background-size: cover; transform-origin: center center;
+        }
+
+        /* --- 2. MATRIX WARP EFFECT --- */
         .warp-effect { animation: warpSuck 1.2s forwards cubic-bezier(0.6, -0.28, 0.735, 0.045); pointer-events: none; }
         @keyframes warpSuck {
             0% { transform: scale(1); filter: blur(0px); opacity: 1; }
             50% { transform: scale(1.1) rotate(2deg); filter: blur(5px); }
             100% { transform: scale(0); filter: blur(20px) brightness(5); opacity: 0; }
         }
+        #matrix-overlay { position: fixed; inset: 0; z-index: 99999; display: none; background: #000; }
 
-        /* --- SYSTEM COMPONENTS --- */
-        #boot-screen { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; cursor: pointer; }
-        #crt-overlay { position: fixed; inset: 0; z-index: 9999; pointer-events: none; background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.1) 50%), linear-gradient(90deg, rgba(255,0,0,0.02), rgba(0,255,0,0.01), rgba(0,0,255,0.02)); background-size: 100% 3px, 3px 100%; }
+        /* --- 3. SYSTEM SCREENS --- */
+        #boot-screen {
+            position: fixed; inset: 0; background: #000; z-index: 10000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            color: #fff; cursor: pointer; font-family: monospace;
+        }
 
-        #desktop { height: 100vh; padding: 20px; display: flex; flex-direction: column; flex-wrap: wrap; align-content: flex-start; }
-        .desktop-icon { width: 85px; margin: 10px; text-align: center; color: white; cursor: pointer; text-shadow: 1px 1px 2px #000; font-size: 11px; }
-        .desktop-icon img { width: 42px; height: 42px; display: block; margin: 0 auto 5px; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.5)); }
-        .desktop-icon:hover div { background: rgba(255,255,255,0.3); border-radius: 3px; }
+        .os-window { 
+            position: absolute; background: #ece9d8; border: 3px solid #0054e3; 
+            border-radius: 8px 8px 0 0; box-shadow: 5px 5px 25px rgba(0,0,0,0.5); 
+            display: none; z-index: 100;
+        }
+        .window-header { background: linear-gradient(to right, #0058e6, #2881fa); color: white; padding: 4px 8px; font-weight: bold; display: flex; justify-content: space-between; cursor: move; }
+        .close-btn { background: #e81123; color: white; border: 1px solid #fff; cursor: pointer; }
 
-        /* --- WINDOWS --- */
-        .os-window { position: absolute; display: none; background: #ece9d8; border: 3px solid var(--win-blue); border-radius: 8px 8px 0 0; box-shadow: 5px 5px 25px rgba(0,0,0,0.5); z-index: 100; }
-        .window-header { background: linear-gradient(to right, #0058e6, #2881fa); color: white; padding: 4px 8px; font-weight: bold; font-size: 13px; display: flex; justify-content: space-between; cursor: move; }
-        .close-btn { background: #e81123; color: white; border: 1px solid #fff; cursor: pointer; font-weight: bold; }
+        /* --- 4. DESKTOP & ICONS --- */
+        .desktop { padding: 20px; display: flex; flex-direction: column; flex-wrap: wrap; align-content: flex-start; gap: 15px; height: 85vh; }
+        .desktop-icon { width: 85px; text-align: center; color: white; cursor: pointer; font-size: 11px; text-shadow: 1px 1px 2px #000; }
+        .desktop-icon img { width: 42px; height: 42px; display: block; margin: 0 auto 5px; filter: drop-shadow(2px 2px 2px #000); }
 
-        /* --- TCG ENGINE --- */
-        .card-container { perspective: 1200px; width: 320px; height: 460px; margin: 10px auto; }
-        .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; }
-        .is-flipped { transform: rotateY(180deg); }
-        .card-front, .card-back { position: absolute; inset: 0; backface-visibility: hidden; border-radius: 15px; border: 2px solid #333; overflow: hidden; background: #000; }
-        .card-back { transform: rotateY(180deg); }
-        .holo { position: absolute; inset: 0; z-index: 2; background: linear-gradient(125deg, transparent 15%, rgba(255,255,255,0.3) 50%, transparent 70%); mix-blend-mode: color-dodge; pointer-events: none; }
-        .crack { position: absolute; inset: 0; z-index: 20; background: url('https://i.imgur.com/83pZ33l.png') center/cover; opacity: 0; pointer-events: none; }
-        .burn { position: absolute; inset: 0; z-index: 11; background: radial-gradient(circle, #ff4500 10%, #ff0000 40%, #000 90%); mix-blend-mode: overlay; opacity: 0; transition: opacity 1.5s; }
-        .card-container:hover .burn { opacity: 0.8; transition-delay: 3s; }
+        /* --- 5. APPS (PAINT/TCG/REBOOT) --- */
+        #paint-canvas { background: #fff; border: 2px inset #eee; cursor: crosshair; display: block; margin: 5px; }
+        .paint-tools { padding: 8px; background: #ece9d8; display: flex; gap: 8px; border-bottom: 1px solid #808080; }
+        
+        #crashOverlay, #rebootOverlay { display: none; position: fixed; inset: 0; z-index: 10001; background: #000; }
+        .reboot-screen { color: #33ff33; font-family: monospace; padding: 40px; font-size: 14px; }
+        
+        .broken-pixel { position: absolute; width: 2px; height: 2px; background: red; z-index: 10; pointer-events: none; }
+        .system-failure { filter: invert(1) hue-rotate(180deg) blur(10px) brightness(2) !important; }
 
-        /* --- GUESTBOOK APP --- */
-        #guestbook-content { padding: 10px; background: #fff; height: 250px; width: 350px; overflow-y: auto; font-size: 12px; border: 2px inset #eee; }
-        .guest-msg { border-bottom: 1px solid #eee; padding: 5px; margin-bottom: 5px; }
-
-        /* --- PAINT APP --- */
-        #paint-canvas { background: #fff; border: 2px inset #eee; cursor: crosshair; display: block; }
-        .paint-tools { padding: 10px; background: #ece9d8; display: flex; gap: 10px; border-top: 1px solid #fff; }
-
-        /* --- TASKBAR & START --- */
-        #taskbar { position: absolute; bottom: 0; width: 100%; height: 30px; background: linear-gradient(to bottom, #245edb, #1a4299); z-index: 9995; display: flex; justify-content: space-between; align-items: center; }
-        #start-menu { position: absolute; bottom: 30px; left: 0; width: 280px; background: white; border: 2px solid var(--win-blue); display: none; z-index: 9996; box-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
-        .start-item { padding: 10px; font-size: 12px; cursor: pointer; border-bottom: 1px solid #eee; color: #333; }
-        .start-item:hover { background: #2f71cd; color: white; }
-
-        #matrix-overlay { position: fixed; inset: 0; z-index: 99999; display: none; }
-        #bsod { position: fixed; inset: 0; background: #0000aa; color: white; padding: 50px; font-family: "Lucida Console", monospace; display: none; z-index: 99999; }
-        img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        @keyframes monitor-flinch {
+            0%, 95%, 100% { transform: none; opacity: 1; }
+            96% { transform: translate(4px, -1px); opacity: 0.8; filter: hue-rotate(90deg); }
+        }
     </style>
 </head>
 <body>
 
-    <audio id="bootSound" src="https://www.myinstants.com/media/sounds/windows-xp-startup.mp3"></audio>
-    <audio id="flipSound" src="https://www.soundjay.com/buttons/button-20.mp3"></audio>
-    <audio id="crackSound" src="https://www.soundjay.com/misc/sounds/glass-break-1.mp3"></audio>
+<div id="boot-screen" onclick="boot()">
+    <h2>KERRIGAN STUDIO OS v2001</h2>
+    <p style="animation: blink 1s infinite;">[ CLICK TO POWER ON ]</p>
+</div>
+<div class="crt-overlay"></div>
+<div id="matrix-overlay"><canvas id="m-canvas"></canvas></div>
+<div id="crashOverlay"><video id="dinoVideo" src="trex.mp4" style="width:100%;height:100%;object-fit:cover;filter:pixelated;"></video></div>
+<div id="rebootOverlay" class="reboot-screen"><pre id="rebootLog"></pre></div>
 
-    <div id="matrix-overlay"><canvas id="m-canvas"></canvas></div>
-
-    <div id="os-workspace">
-        <div id="boot-screen" onclick="boot()">
-            <h2>KERRIGAN OS v2001</h2>
-            <p style="animation: blink 1s infinite;">[ CLICK TO BOOT ]</p>
+<div id="os-workspace">
+    <div class="desktop">
+        <div class="desktop-icon" ondblclick="openWin('paint-window')">
+            <img src="https://img.icons8.com/color/48/000000/ms-paint.png">
+            <div>Paint.exe</div>
         </div>
-
-        <div id="crt-overlay"></div>
-
-        <div id="desktop">
-            <div class="desktop-icon" ondblclick="openWin('tcg-window')">
-                <img src="tcgicon.PNG" onerror="this.src='https://img.icons8.com/color/48/000000/tarot-cards.png'">
-                <div>Kerrigan TCG</div>
-            </div>
-            <div class="desktop-icon" ondblclick="triggerWarp()">
-                <img src="https://img.icons8.com/color/48/000000/rabbit.png">
-                <div style="color:#0f0; font-weight:bold;">White_Rabbit.exe</div>
-            </div>
-            <div class="desktop-icon" ondblclick="openWin('guestbook-window')">
-                <img src="https://img.icons8.com/color/48/000000/edit-property.png">
-                <div>Guestbook.exe</div>
-            </div>
-            <div class="desktop-icon" ondblclick="openWin('paint-window')">
-                <img src="https://img.icons8.com/color/48/000000/ms-paint.png">
-                <div>Paint.exe</div>
-            </div>
-            <div class="desktop-icon" ondblclick="downloadResume()">
-                <img src="https://img.icons8.com/color/48/000000/download--v1.png">
-                <div style="color:#ffcc00; font-weight:bold;">Get_Resume.exe</div>
-            </div>
+        <div class="desktop-icon forbidden">
+            <img src="https://img.icons8.com/color/48/000000/folder-invoices.png">
+            <div>TOP SECRET</div>
         </div>
-
-        <div class="os-window" id="tcg-window" style="top:10%; left:30%;">
-            <div class="window-header" id="tcg-drag"><span>Kerrigan Trading Card</span><button class="close-btn" onclick="closeWin('tcg-window')">X</button></div>
-            <div style="padding:15px;">
-                <div class="card-container" onclick="interactTcg(this)">
-                    <div class="card-inner">
-                        <div class="card-front">
-                            <div class="holo"></div><div class="burn"></div><div class="crack" id="glassCrack"></div>
-                            <img src="fronttcg.png" alt="Front">
-                        </div>
-                        <div class="card-back"><img src="tcgicon.PNG" alt="Back"></div>
-                    </div>
-                </div>
-            </div>
+        <div class="desktop-icon" ondblclick="triggerWarp()">
+            <img src="https://img.icons8.com/color/48/000000/rabbit.png">
+            <div style="color:#0f0; font-weight:bold;">White_Rabbit.exe</div>
         </div>
-
-        <div class="os-window" id="guestbook-window" style="top:20%; left:10%;">
-            <div class="window-header" id="gb-drag"><span>Guestbook.exe</span><button class="close-btn" onclick="closeWin('guestbook-window')">X</button></div>
-            <div style="padding:10px;">
-                <div id="guestbook-content"></div>
-                <div style="margin-top:10px;">
-                    <input type="text" id="gb-name" placeholder="Your Name" style="width:80px;">
-                    <input type="text" id="gb-msg" placeholder="Leave a message..." style="width:180px;">
-                    <button onclick="addEntry()">Post</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="os-window" id="paint-window" style="top:15%; left:40%;">
-            <div class="window-header" id="paint-drag"><span>Paint.exe</span><button class="close-btn" onclick="closeWin('paint-window')">X</button></div>
-           <div class="paint-tools">
-            <input type="color" id="p-color" value="#000000">
-            <button onclick="clearPaint()">Clear</button>
-            <button onclick="saveArt()" style="color:blue; font-weight:bold;">Save Art</button>
-            <a href="https://instagram.com/kerrigan_studio" target="_blank" style="margin-left:15px; color:#e1306c; font-weight:bold; font-size:12px; text-decoration:none; align-self:center;">📷 My Instagram</a>
-        </div>
-            <canvas id="paint-canvas" width="400" height="300"></canvas>
-        </div>
-
-        <div class="os-window" id="note-window" style="top:15%; left:20%;">
-            <div class="window-header" id="note-drag"><span id="note-title">Notepad</span><button class="close-btn" onclick="closeWin('note-window')">X</button></div>
-            <textarea style="width:450px; height:350px; font-family:monospace; padding:15px; border:none; outline:none; font-size:12px;" id="note-content" readonly></textarea>
-        </div>
-
-        <div id="bsod">
-            <p>A problem has been detected and Windows has been shut down...</p>
-            <p>*** STOP: 0x000000ED (KERRIGAN_TCG_OVERLOAD)</p>
-        </div>
-
-        <div id="taskbar">
-            <button onclick="toggleStart()" style="background:#388e3c; color:white; font-weight:bold; height:100%; border:none; padding:0 15px; cursor:pointer; font-style:italic;">start</button>
-            <div id="clock" style="color:white; padding-right:15px; font-size:11px;"></div>
-        </div>
-
-        <div id="start-menu">
-            <div style="background: linear-gradient(to bottom, #0058e6, #125eed); color:white; padding:10px; font-weight:bold; border-bottom:2px solid #f98411;">Kerrigan Studio</div>
-            <div class="start-item" onclick="loadDoc('Bio.txt')">Bio.txt</div>
-            <div class="start-item" onclick="loadDoc('Resume.txt')">Resume.txt</div>
-            <div class="start-item" onclick="downloadResume()" style="background:#fffbe6;"><strong>💾 Download Resume</strong></div>
+        <div class="desktop-icon" ondblclick="downloadResume()">
+            <img src="https://img.icons8.com/color/48/000000/download--v1.png">
+            <div style="color:#ffcc00; font-weight:bold;">Get_Resume.exe</div>
         </div>
     </div>
 
-    <script>
-        const docs = {
-            'Bio.txt': "====================================\nPATRICK KERRIGAN\nMultimedia Designer & USMC Veteran\n====================================\n\nMultimedia Developer and Videographer with a B.A. in Graphic Design and a background in USMC Infantry Operations. \n\nI specialize in end-to-end video production, combining technical expertise in Adobe Premiere Pro and After Effects with a disciplined, mission-first approach to workflows. \n\nExperienced in creating high-impact social-first content, motion graphics, and product marketing assets. Bringing military-grade reliability, physical stamina for location shoots, and a creative eye to the WeatherTech production team.",
-            
-            'Resume.txt': "====================================\nPATRICK KERRIGAN - RESUME\n====================================\n\nCONTACT\nEmail: kerriganartstudio@gmail.com\nPhone: 773-562-5291\nLocation: Oak Lawn, Illinois\n\nEXPERIENCE\n\n[2025 - Present]\nAK. GRAZING. CO | Content Creator\n- Developed 'social-first' vertical video strategies (Reels/Shorts) incorporating motion graphics and kinetic typography using Adobe After Effects and Premiere Pro.\n\n[2025 - Present]\nLIVENATION | Security Guard\n- Collaborate with event operations team to ensure safe & successful execution of large-scale events and concerts.\n- Monitor crowd dynamics to identify medical emergencies or aggressive behavior.\n\n[2019 - 2021]\nHINES VA HOSPITAL | Audiovisual Asst\n- Facilitated daily audiovisual operations for hospital administration, ensuring seamless communication flows for staff, patients, and directors.\n\nSKILLS\n- Video Editing & Videography\n- Graphic Design & Motion Graphics\n- Content Planning & Product Staging\n- Creativity & Communication"
-        };
+    <div class="os-window" id="paint-window" style="top:10%; left:20%;">
+        <div class="window-header" id="paint-drag"><span>Paint.exe - Studio Edition</span><button class="close-btn" onclick="closeWin('paint-window')">X</button></div>
+        <div class="paint-tools">
+            <input type="color" id="p-color" value="#000000">
+            <select id="p-size"><option value="2">Fine</option><option value="5" selected>Med</option><option value="15">Bold</option></select>
+            <button onclick="clearPaint()">Clear</button>
+            <button onclick="saveArt()" style="color:blue; font-weight:bold;">💾 Save</button>
+            <a href="https://instagram.com/kerriganstudio" target="_blank" style="font-size:10px; margin-left:auto;">DM TO POST</a>
+        </div>
+        <canvas id="paint-canvas" width="500" height="350"></canvas>
+    </div>
 
-        let clicks = 0;
-        function boot() { document.getElementById('bootSound').play().catch(()=>{}); document.getElementById('boot-screen').style.display='none'; }
-        function openWin(id) { document.getElementById(id).style.display='block'; }
-        function closeWin(id) { document.getElementById(id).style.display='none'; }
-        function toggleStart() { const s = document.getElementById('start-menu'); s.style.display = s.style.display==='block'?'none':'block'; }
-        
-        function loadDoc(n) { 
-            openWin('note-window'); 
-            document.getElementById('note-title').innerText=n; 
-            document.getElementById('note-content').value=docs[n]; 
-            if(document.getElementById('start-menu').style.display === 'block') toggleStart();
-        }
-        
-        function interactTcg(el) { 
-            el.querySelector('.card-inner').classList.toggle('is-flipped'); 
-            const f = document.getElementById('flipSound'); f.currentTime=0; f.play().catch(()=>{});
-            clicks++;
-            if(clicks === 6) { document.getElementById('glassCrack').style.opacity = '1'; document.getElementById('crackSound').play().catch(()=>{}); }
-            if(clicks >= 10) document.getElementById('bsod').style.display = 'block';
-        }
+    <div class="os-window" id="note-window" style="top:15%; left:10%;">
+        <div class="window-header" id="note-drag"><span id="note-title">Notepad</span><button class="close-btn" onclick="closeWin('note-window')">X</button></div>
+        <textarea id="note-content" style="width:400px; height:300px; padding:10px; border:none; outline:none; font-family:monospace;" readonly></textarea>
+    </div>
+</div>
 
-        function addEntry() {
-            const name = document.getElementById('gb-name').value || "Anonymous";
-            const msg = document.getElementById('gb-msg').value;
-            if(!msg) return;
-            const container = document.getElementById('guestbook-content');
-            container.innerHTML += `<div class="guest-msg"><strong>${name}:</strong> ${msg}</div>`;
-            document.getElementById('gb-msg').value = "";
-            container.scrollTop = container.scrollHeight;
-        }
+<script>
+    const docs = {
+        'Bio.txt': "PATRICK KERRIGAN\nMultimedia Designer & USMC Veteran\nSpecializing in high-impact video & motion graphics.",
+        'Resume.txt': "CONTACT: kerriganartstudio@gmail.com\nLocation: Oak Lawn, IL\n\nEXPERIENCE:\nAK GRAZING CO | Content Creator\nLIVENATION | Security\nHINES VA HOSPITAL | AV Assistant"
+    };
 
-        function downloadResume() {
-            const blob = new Blob([docs['Resume.txt']], {type: 'text/plain'});
-            const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.download = "Patrick_Kerrigan_Resume.txt";
-            link.click();
-        }
+    let audioCtx, drawing = false;
 
-        // REDIRECT TO NEW CANVA LINK
-        function triggerWarp() {
-            document.getElementById('os-workspace').classList.add('warp-effect');
-            setTimeout(() => { 
-                document.getElementById('matrix-overlay').style.display='block'; 
-                startMatrix(); 
-                
-                // Wait 5 seconds in the matrix, then go to Canva Portfolio
-                setTimeout(() => {
-                    window.location.href = "https://kerriganartstudioportfolio.my.canva.site/patrick-kerrigan-graphic-designer-2026";
-                }, 5000);
+    // 1. BOOT & SOUND
+    function boot() {
+        document.getElementById('boot-screen').style.display = 'none';
+        initAudio();
+    }
 
-            }, 1100);
-        }
+    function initAudio() {
+        if (audioCtx) return;
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        osc.type = 'sawtooth'; osc.frequency.value = 60;
+        g.gain.value = 0.005;
+        osc.connect(g); g.connect(audioCtx.destination); osc.start();
+    }
 
-        function startMatrix() {
-            const c = document.getElementById('m-canvas'); const ctx = c.getContext('2d');
-            c.width = window.innerWidth; c.height = window.innerHeight;
-            const drops = Array(Math.floor(c.width/20)).fill(1);
-            setInterval(() => {
-                ctx.fillStyle = "rgba(0,0,0,0.05)"; ctx.fillRect(0,0,c.width,c.height);
-                ctx.fillStyle = "#0F0"; ctx.font = "20px monospace";
-                drops.forEach((y, i) => {
-                    ctx.fillText(Math.floor(Math.random()*2), i*20, y*20);
-                    if(y*20 > c.height && Math.random() > 0.975) drops[i] = 0;
-                    drops[i]++;
-                });
-            }, 33);
-        }
+    // 2. PAINT LOGIC
+    const pCanvas = document.getElementById('paint-canvas');
+    const pCtx = pCanvas.getContext('2d');
+    pCanvas.onmousedown = () => { drawing = true; };
+    pCanvas.onmouseup = () => { drawing = false; pCtx.beginPath(); };
+    pCanvas.onmousemove = (e) => {
+        if(!drawing) return;
+        const r = pCanvas.getBoundingClientRect();
+        pCtx.lineWidth = document.getElementById('p-size').value;
+        pCtx.lineCap = 'round'; pCtx.strokeStyle = document.getElementById('p-color').value;
+        pCtx.lineTo(e.clientX - r.left, e.clientY - r.top); pCtx.stroke();
+        pCtx.beginPath(); pCtx.moveTo(e.clientX - r.left, e.clientY - r.top);
+        if (Math.random() > 0.96) spawnPixel(e.pageX, e.pageY);
+    };
 
-        const pCanvas = document.getElementById('paint-canvas'); const pCtx = pCanvas.getContext('2d');
-        let painting = false;
-        pCanvas.onmousedown = () => painting = true;
-        pCanvas.onmouseup = () => { painting = false; pCtx.beginPath(); };
-        pCanvas.onmousemove = (e) => {
-            if(!painting) return;
-            pCtx.lineWidth = 5; pCtx.lineCap = 'round'; pCtx.strokeStyle = document.getElementById('p-color').value;
-            const rect = pCanvas.getBoundingClientRect();
-            pCtx.lineTo(e.clientX - rect.left, e.clientY - rect.top); pCtx.stroke();
-            pCtx.beginPath(); pCtx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
-        };
-        function clearPaint() { pCtx.clearRect(0,0,pCanvas.width,pCanvas.height); }
-        function saveArt() {
-            const link = document.createElement('a'); link.download = 'Kerrigan_Studio_Art.png';
-            link.href = pCanvas.toDataURL(); link.click();
-        }
+    function clearPaint() { pCtx.clearRect(0,0,pCanvas.width,pCanvas.height); }
+    function saveArt() {
+        alert("SYSTEM ERROR: Local disk full. Exporting to external cloud...");
+        const link = document.createElement('a');
+        link.download = 'kerrigan-art.png'; link.href = pCanvas.toDataURL(); link.click();
+    }
 
-        function drag(w, h) {
-            let p1=0, p2=0, p3=0, p4=0;
-            h.onmousedown = (e) => {
-                p3=e.clientX; p4=e.clientY;
-                document.onmouseup = () => { document.onmouseup=null; document.onmousemove=null; };
-                document.onmousemove = (e) => {
-                    p1=p3-e.clientX; p2=p4-e.clientY; p3=e.clientX; p4=e.clientY;
-                    w.style.top=(w.offsetTop-p2)+"px"; w.style.left=(w.offsetLeft-p1)+"px";
-                };
+    function spawnPixel(x,y) {
+        const p = document.createElement('div'); p.className = 'broken-pixel';
+        p.style.left = x+'px'; p.style.top = y+'px'; document.body.appendChild(p);
+        setTimeout(() => p.remove(), 3000);
+    }
+
+    // 3. MATRIX WARP (RESTORED)
+    function triggerWarp() {
+        document.getElementById('os-workspace').classList.add('warp-effect');
+        setTimeout(() => {
+            document.getElementById('matrix-overlay').style.display = 'block';
+            startMatrix();
+            setTimeout(() => { window.location.href = "https://kerriganartstudioportfolio.my.canva.site/patrick-kerrigan-graphic-designer-2026"; }, 4000);
+        }, 1100);
+    }
+
+    function startMatrix() {
+        const c = document.getElementById('m-canvas'); const ctx = c.getContext('2d');
+        c.width = window.innerWidth; c.height = window.innerHeight;
+        const drops = Array(Math.floor(c.width/20)).fill(1);
+        setInterval(() => {
+            ctx.fillStyle = "rgba(0,0,0,0.05)"; ctx.fillRect(0,0,c.width,c.height);
+            ctx.fillStyle = "#0F0"; ctx.font = "20px monospace";
+            drops.forEach((y, i) => {
+                ctx.fillText(Math.floor(Math.random()*2), i*20, y*20);
+                if(y*20 > c.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            });
+        }, 33);
+    }
+
+    // 4. DINO CRASH & REBOOT
+    document.querySelector('.forbidden').onclick = () => {
+        document.body.classList.add('system-failure');
+        setTimeout(() => {
+            document.getElementById('crashOverlay').style.display = 'block';
+            const v = document.getElementById('dinoVideo'); v.play();
+            v.onended = () => {
+                document.getElementById('crashOverlay').style.display = 'none';
+                document.getElementById('rebootOverlay').style.display = 'block';
+                runReboot();
             };
-        }
-        drag(document.getElementById('tcg-window'), document.getElementById('tcg-drag'));
-        drag(document.getElementById('guestbook-window'), document.getElementById('gb-drag'));
-        drag(document.getElementById('paint-window'), document.getElementById('paint-drag'));
-        drag(document.getElementById('note-window'), document.getElementById('note-drag'));
+        }, 500);
+    };
 
-        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }, 1000);
-    </script>
+    function runReboot() {
+        const log = document.getElementById('rebootLog');
+        const logo = `
+    _  _________  ____  ___  _________
+   / /  / __/ __ \\/ __ \\/ _ \\/  _/ ___/
+  / /__/ _// /_/ / /_/ / , _// // (_ / 
+ /____/___/\\____/\\____/_/|_/___/\\___/ 
+    S T U D I O   O S   2 0 0 1`;
+        const lines = [logo, "RECOVERING SECTORS...", "ERR: USER_ETIQUETTE_PROTOCOL", "REBOOTING..."];
+        let i = 0;
+        const int = setInterval(() => {
+            log.innerHTML += lines[i] + "\n"; i++;
+            if (i >= lines.length) { clearInterval(int); setTimeout(() => {
+                document.getElementById('rebootOverlay').style.display = 'none';
+                document.body.classList.remove('system-failure');
+            }, 1500); }
+        }, 800);
+    }
+
+    // Utilities
+    function openWin(id) { document.getElementById(id).style.display = 'block'; }
+    function closeWin(id) { document.getElementById(id).style.display = 'none'; }
+    function downloadResume() {
+        const blob = new Blob([docs['Resume.txt']], {type: 'text/plain'});
+        const link = document.createElement('a'); link.href = window.URL.createObjectURL(blob);
+        link.download = "Patrick_Kerrigan_Resume.txt"; link.click();
+    }
+</script>
 </body>
 </html>
