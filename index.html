@@ -13,10 +13,7 @@
         }
 
         /* --- 4th WALL MATRIX WARP --- */
-        .warp-effect {
-            animation: warpSuck 1.2s forwards cubic-bezier(0.6, -0.28, 0.735, 0.045);
-            pointer-events: none;
-        }
+        .warp-effect { animation: warpSuck 1.2s forwards cubic-bezier(0.6, -0.28, 0.735, 0.045); pointer-events: none; }
         @keyframes warpSuck {
             0% { transform: scale(1); filter: blur(0px); opacity: 1; }
             50% { transform: scale(1.1) rotate(2deg); filter: blur(5px); }
@@ -38,7 +35,7 @@
         .close-btn { background: #e81123; color: white; border: 1px solid #fff; cursor: pointer; font-weight: bold; }
 
         /* --- GUESTBOOK APP --- */
-        #guestbook-content { padding: 10px; background: #fff; height: 300px; width: 350px; overflow-y: auto; font-size: 12px; border: 2px inset #eee; }
+        #guestbook-content { padding: 10px; background: #fff; height: 250px; width: 350px; overflow-y: auto; font-size: 12px; border: 2px inset #eee; }
         .guest-msg { border-bottom: 1px solid #eee; padding: 5px; margin-bottom: 5px; }
 
         /* --- TCG ENGINE --- */
@@ -49,10 +46,21 @@
         .card-back { transform: rotateY(180deg); }
         .holo { position: absolute; inset: 0; z-index: 2; background: linear-gradient(125deg, transparent 15%, rgba(255,255,255,0.3) 50%, transparent 70%); mix-blend-mode: color-dodge; pointer-events: none; }
         .crack { position: absolute; inset: 0; z-index: 20; background: url('https://i.imgur.com/83pZ33l.png') center/cover; opacity: 0; pointer-events: none; }
-        
-        /* --- TASKBAR --- */
+        .burn { position: absolute; inset: 0; z-index: 11; background: radial-gradient(circle, #ff4500 10%, #ff0000 40%, #000 90%); mix-blend-mode: overlay; opacity: 0; transition: opacity 1.5s; }
+        .card-container:hover .burn { opacity: 0.8; transition-delay: 3s; }
+
+        /* --- PAINT APP --- */
+        #paint-canvas { background: #fff; border: 2px inset #eee; cursor: crosshair; display: block; }
+        .paint-tools { padding: 10px; background: #ece9d8; display: flex; gap: 10px; border-top: 1px solid #fff; }
+
+        /* --- TASKBAR & START --- */
         #taskbar { position: absolute; bottom: 0; width: 100%; height: 30px; background: linear-gradient(to bottom, #245edb, #1a4299); z-index: 9995; display: flex; justify-content: space-between; align-items: center; }
+        #start-menu { position: absolute; bottom: 30px; left: 0; width: 280px; background: white; border: 2px solid var(--win-blue); display: none; z-index: 9996; box-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
+        .start-item { padding: 10px; font-size: 12px; cursor: pointer; border-bottom: 1px solid #eee; color: #333; }
+        .start-item:hover { background: #2f71cd; color: white; }
+
         #matrix-overlay { position: fixed; inset: 0; background: black; z-index: 99999; display: none; }
+        #bsod { position: fixed; inset: 0; background: #0000aa; color: white; padding: 50px; font-family: "Lucida Console", monospace; display: none; z-index: 99999; }
         img { width: 100%; height: 100%; object-fit: cover; display: block; }
     </style>
 </head>
@@ -60,10 +68,11 @@
 
     <audio id="bootSound" src="https://www.myinstants.com/media/sounds/windows-xp-startup.mp3"></audio>
     <audio id="flipSound" src="https://www.soundjay.com/buttons/button-20.mp3"></audio>
+    <audio id="crackSound" src="https://www.soundjay.com/misc/sounds/glass-break-1.mp3"></audio>
 
     <div id="boot-screen" onclick="boot()">
         <h2>KERRIGAN OS v2001</h2>
-        <p>[ CLICK TO BOOT ]</p>
+        <p style="animation: blink 1s infinite;">[ CLICK TO BOOT ]</p>
     </div>
 
     <div id="crt-overlay"></div>
@@ -81,6 +90,29 @@
             <img src="https://img.icons8.com/color/48/000000/edit-property.png">
             <div>Guestbook.exe</div>
         </div>
+        <div class="desktop-icon" ondblclick="openWin('paint-window')">
+            <img src="https://img.icons8.com/color/48/000000/ms-paint.png">
+            <div>Paint.exe</div>
+        </div>
+        <div class="desktop-icon" ondblclick="downloadResume()">
+            <img src="https://img.icons8.com/color/48/000000/download--v1.png">
+            <div style="color:#ffcc00; font-weight:bold;">Get_Resume.exe</div>
+        </div>
+    </div>
+
+    <div class="os-window" id="tcg-window" style="top:10%; left:30%;">
+        <div class="window-header" id="tcg-drag"><span>Kerrigan Trading Card</span><button class="close-btn" onclick="closeWin('tcg-window')">X</button></div>
+        <div style="padding:15px;">
+            <div class="card-container" onclick="interactTcg(this)">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <div class="holo"></div><div class="burn"></div><div class="crack" id="glassCrack"></div>
+                        <img src="fronttcg.png" alt="Front">
+                    </div>
+                    <div class="card-back"><img src="tcgicon.PNG" alt="Back"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="os-window" id="guestbook-window" style="top:20%; left:10%;">
@@ -95,35 +127,68 @@
         </div>
     </div>
 
-    <div class="os-window" id="tcg-window" style="top:10%; left:30%;">
-        <div class="window-header" id="tcg-drag"><span>Kerrigan Trading Card</span><button class="close-btn" onclick="closeWin('tcg-window')">X</button></div>
-        <div style="padding:15px;">
-            <div class="card-container" onclick="flip(this)">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <div class="holo"></div><div class="crack" id="glassCrack"></div>
-                        <img src="fronttcg.png" alt="Front">
-                    </div>
-                    <div class="card-back"><img src="tcgicon.PNG" alt="Back"></div>
-                </div>
-            </div>
+    <div class="os-window" id="paint-window" style="top:15%; left:40%;">
+        <div class="window-header" id="paint-drag"><span>Paint.exe</span><button class="close-btn" onclick="closeWin('paint-window')">X</button></div>
+        <div class="paint-tools">
+            <input type="color" id="p-color" value="#000000">
+            <button onclick="clearPaint()">Clear</button>
+            <button onclick="saveArt()" style="color:blue; font-weight:bold;">Save Art</button>
         </div>
+        <canvas id="paint-canvas" width="400" height="300"></canvas>
+    </div>
+
+    <div class="os-window" id="note-window" style="top:25%; left:20%;">
+        <div class="window-header" id="note-drag"><span id="note-title">Notepad</span><button class="close-btn" onclick="closeWin('note-window')">X</button></div>
+        <textarea style="width:400px; height:300px; font-family:monospace; padding:15px; border:none; outline:none; font-size:14px;" id="note-content" readonly></textarea>
+    </div>
+
+    <div id="bsod">
+        <p>A problem has been detected and Windows has been shut down...</p>
+        <p>*** STOP: 0x000000ED (KERRIGAN_TCG_OVERLOAD)</p>
     </div>
 
     <div id="taskbar">
-        <button style="background:#388e3c; color:white; font-weight:bold; height:100%; border:none; padding:0 15px; cursor:pointer;">start</button>
+        <button onclick="toggleStart()" style="background:#388e3c; color:white; font-weight:bold; height:100%; border:none; padding:0 15px; cursor:pointer; font-style:italic;">start</button>
         <div id="clock" style="color:white; padding-right:15px; font-size:11px;"></div>
+    </div>
+
+    <div id="start-menu">
+        <div style="background: linear-gradient(to bottom, #0058e6, #125eed); color:white; padding:10px; font-weight:bold; border-bottom:2px solid #f98411;">Kerrigan Studio</div>
+        <div class="start-item" onclick="loadDoc('Bio.txt')">Bio.txt</div>
+        <div class="start-item" onclick="loadDoc('Resume.txt')">Resume.txt</div>
+        <div class="start-item" onclick="downloadResume()" style="background:#fffbe6;"><strong>💾 Download Resume</strong></div>
     </div>
 
     <div id="matrix-overlay"><canvas id="m-canvas"></canvas></div>
 
     <script>
-        function boot() { document.getElementById('bootSound').play(); document.getElementById('boot-screen').style.display='none'; }
+        const docs = {
+            'Bio.txt': "PATRICK KERRIGAN\nGraphic Artist\nUSMC Veteran\n\nTranslating concepts through visual narratives...",
+            'Resume.txt': "====================================\nPATRICK KERRIGAN - RESUME\n====================================\n\nEXPERIENCE\n\n[Aug 2021 - Present]\nFreelance Graphic Designer & Content Creator\nKerrigan_Studio\n\n[Oct 2006 - 2010]\nUSMC Rifleman (0311)\n\nSKILLS\n- Adobe Creative Suite\n- Video & Motion Design\n- Tactical Visual Aesthetics"
+        };
+
+        let clicks = 0;
+        function boot() { document.getElementById('bootSound').play().catch(()=>{}); document.getElementById('boot-screen').style.display='none'; }
         function openWin(id) { document.getElementById(id).style.display='block'; }
         function closeWin(id) { document.getElementById(id).style.display='none'; }
-        function flip(el) { el.querySelector('.card-inner').classList.toggle('is-flipped'); document.getElementById('flipSound').play(); }
+        function toggleStart() { const s = document.getElementById('start-menu'); s.style.display = s.style.display==='block'?'none':'block'; }
+        
+        function loadDoc(n) { 
+            openWin('note-window'); 
+            document.getElementById('note-title').innerText=n; 
+            document.getElementById('note-content').value=docs[n]; 
+            if(document.getElementById('start-menu').style.display === 'block') toggleStart();
+        }
+        
+        function interactTcg(el) { 
+            el.querySelector('.card-inner').classList.toggle('is-flipped'); 
+            const f = document.getElementById('flipSound'); f.currentTime=0; f.play().catch(()=>{});
+            clicks++;
+            if(clicks === 6) { document.getElementById('glassCrack').style.opacity = '1'; document.getElementById('crackSound').play().catch(()=>{}); }
+            if(clicks >= 10) document.getElementById('bsod').style.display = 'block';
+        }
 
-        // Guestbook Logic
+        // Guestbook
         function addEntry() {
             const name = document.getElementById('gb-name').value || "Anonymous";
             const msg = document.getElementById('gb-msg').value;
@@ -134,7 +199,16 @@
             container.scrollTop = container.scrollHeight;
         }
 
-        // Warp Logic
+        // Resume Download
+        function downloadResume() {
+            const blob = new Blob([docs['Resume.txt']], {type: 'text/plain'});
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "Patrick_Kerrigan_Resume.txt";
+            link.click();
+        }
+
+        // Matrix Warp
         function triggerWarp() {
             document.getElementById('main-os').classList.add('warp-effect');
             setTimeout(() => { document.getElementById('matrix-overlay').style.display='block'; startMatrix(); }, 1100);
@@ -155,7 +229,25 @@
             }, 33);
         }
 
-        // Draggables
+        // Paint Logic
+        const pCanvas = document.getElementById('paint-canvas'); const pCtx = pCanvas.getContext('2d');
+        let painting = false;
+        pCanvas.onmousedown = () => painting = true;
+        pCanvas.onmouseup = () => { painting = false; pCtx.beginPath(); };
+        pCanvas.onmousemove = (e) => {
+            if(!painting) return;
+            pCtx.lineWidth = 5; pCtx.lineCap = 'round'; pCtx.strokeStyle = document.getElementById('p-color').value;
+            const rect = pCanvas.getBoundingClientRect();
+            pCtx.lineTo(e.clientX - rect.left, e.clientY - rect.top); pCtx.stroke();
+            pCtx.beginPath(); pCtx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        };
+        function clearPaint() { pCtx.clearRect(0,0,pCanvas.width,pCanvas.height); }
+        function saveArt() {
+            const link = document.createElement('a'); link.download = 'Kerrigan_Studio_Art.png';
+            link.href = pCanvas.toDataURL(); link.click();
+        }
+
+        // Drag Logic
         function drag(w, h) {
             let p1=0, p2=0, p3=0, p4=0;
             h.onmousedown = (e) => {
@@ -169,6 +261,8 @@
         }
         drag(document.getElementById('tcg-window'), document.getElementById('tcg-drag'));
         drag(document.getElementById('guestbook-window'), document.getElementById('gb-drag'));
+        drag(document.getElementById('paint-window'), document.getElementById('paint-drag'));
+        drag(document.getElementById('note-window'), document.getElementById('note-drag'));
 
         setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }, 1000);
     </script>
