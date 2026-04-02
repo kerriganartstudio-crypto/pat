@@ -135,11 +135,12 @@
 
         <div class="os-window" id="paint-window" style="top:15%; left:40%;">
             <div class="window-header" id="paint-drag"><span>Paint.exe</span><button class="close-btn" onclick="closeWin('paint-window')">X</button></div>
-            <div class="paint-tools">
-                <input type="color" id="p-color" value="#000000">
-                <button onclick="clearPaint()">Clear</button>
-                <button onclick="saveArt()" style="color:blue; font-weight:bold;">Save Art</button>
-            </div>
+           <div class="paint-tools">
+            <input type="color" id="p-color" value="#000000">
+            <button onclick="clearPaint()">Clear</button>
+            <button onclick="saveArt()" style="color:blue; font-weight:bold;">Save Art</button>
+            <a href="https://instagram.com/kerrigan_studio" target="_blank" style="margin-left:15px; color:#e1306c; font-weight:bold; font-size:12px; text-decoration:none; align-self:center;">📷 My Instagram</a>
+        </div>
             <canvas id="paint-canvas" width="400" height="300"></canvas>
         </div>
 
