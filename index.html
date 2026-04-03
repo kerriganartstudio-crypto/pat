@@ -235,10 +235,9 @@
     function openWin(id) { document.getElementById(id).style.display = 'block'; }
     function closeWin(id) { document.getElementById(id).style.display = 'none'; }
     function downloadResume() {
-        const blob = new Blob([docs['Resume.txt']], {type: 'text/plain'});
-        const link = document.createElement('a'); link.href = window.URL.createObjectURL(blob);
-        link.download = "Patrick_Kerrigan_Resume.txt"; link.click();
-    }
+    // This opens your Google Drive PDF in a new tab
+    window.open("https://drive.google.com/file/d/1aFLH23YTGQPCAKYtwsxA23GtRa5VoWhp/view?usp=drive_link", '_blank');
+}
 </script>
 </body>
 </html>
