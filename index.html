@@ -5,343 +5,303 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kerrigan Studio - OS 2001 FINAL</title>
     <style>
-        /* === SYSTEM CORE & CRT === */
+        /* === SYSTEM CORE & MOBILE FIXES === */
         body { 
             margin: 0; overflow: hidden; font-family: 'Tahoma', sans-serif; 
-            background: #000 url('bliss.jpg') no-repeat center center fixed; background-size: cover; 
-            transition: filter 0.3s;
+            background: #000 url('bliss.jpg') no-repeat center center fixed; 
+            -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover;
+            height: 100vh; width: 100vw; transition: filter 1.5s ease-in-out;
         }
+        
         #crt-overlay { 
             position: fixed; inset: 0; z-index: 999999; pointer-events: none; 
             background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.1) 50%), radial-gradient(rgba(255,255,255,0.05), transparent);
             background-size: 100% 100%, 100% 4px; opacity: 0.6; 
         }
 
-        /* === BOOT & SHUTDOWN SCREENS === */
+        /* === BOOT & SCREENS === */
         #boot-screen, #shutdown-screen { position: fixed; inset: 0; background: #000; color: #c0c0c0; font-family: monospace; z-index: 2000000; padding: 40px; }
         #shutdown-screen { display: none; justify-content: center; align-items: center; text-align: center; color: #f90; font-size: 24px; }
         .ascii-marine { color: #3f0; white-space: pre; font-weight: bold; margin: 20px 0; }
 
-        /* === SYSTEM FAILURE / DINO TRAP STYLES (UPDATED) === */
-        #crashOverlay, #rebootOverlay { display: none; position: fixed; inset: 0; z-index: 10001; background: #000; }
-        .reboot-screen { color: #33ff33; font-family: monospace; padding: 40px; font-size: 14px; white-space: pre-wrap; }
-        
-        /* Fixed: Removed invert and heavy blur to prevent 'white/blurry' look */
-        .system-failure { 
-            filter: contrast(2) saturate(1.5) brightness(1.1) !important; 
-            animation: screenShake 0.1s infinite;
-        }
-        @keyframes screenShake {
-            0% { transform: translate(0,0); }
-            25% { transform: translate(2px, -2px); }
-            75% { transform: translate(-2px, 2px); }
-        }
-
-        /* === CRT ANIMATIONS === */
-        .crt-shutdown { animation: crtCollapse 0.8s forwards ease-in; pointer-events: none; }
-        @keyframes crtCollapse {
-            0% { transform: scaleX(1) scaleY(1); filter: brightness(1); }
-            40% { transform: scaleX(1.3) scaleY(0.02); filter: brightness(2); }
-            100% { transform: scaleX(0) scaleY(0); filter: brightness(5); }
-        }
-        #rabbit-hole-overlay { position: fixed; inset: 0; z-index: 1000000; background: #000; display: none; flex-direction: column; justify-content: center; align-items: center; }
-        #terminal-text { color: #0f0; font-family: 'Courier New', monospace; font-size: 20px; font-weight: bold; white-space: pre-wrap; text-align: center; }
-        #matrix-canvas { position: absolute; inset: 0; z-index: -1; }
+        /* === INCEPTION TOTEM EFFECT === */
+        .inception-dream { filter: invert(1) hue-rotate(180deg) blur(1px); transform: scale(1.05); }
+        #totem-overlay { position: fixed; inset: 0; z-index: 1000000; background: rgba(0,0,0,0.8); display: none; flex-direction: column; justify-content: center; align-items: center; color: white; font-family: 'Courier New', monospace; text-align: center; }
+        .wake-up-btn { margin-top: 20px; padding: 10px 20px; background: white; color: black; font-weight: bold; cursor: pointer; border: 2px solid black; }
 
         /* === DESKTOP ICONS === */
-        #desktop { display: flex; flex-direction: column; flex-wrap: wrap; height: calc(100vh - 32px); padding: 15px; align-content: flex-start; }
-        .desktop-icon { width: 95px; margin: 12px; text-align: center; cursor: pointer; color: white; font-size: 11px; text-shadow: 1px 1px 2px #000; }
-        .desktop-icon img { width: 45px; height: 45px; margin-bottom: 4px; filter: drop-shadow(2px 2px 2px #000); }
+        #desktop { display: flex; flex-direction: column; flex-wrap: wrap; height: calc(100vh - 40px); padding: 15px; align-content: flex-start; }
+        .desktop-icon { width: 85px; margin: 10px; text-align: center; cursor: pointer; color: white; font-size: 11px; text-shadow: 1px 1px 2px #000; }
+        .desktop-icon img { width: 40px; height: 40px; margin-bottom: 4px; filter: drop-shadow(2px 2px 2px #000); }
         .desktop-icon:hover div { background: rgba(255,255,255,0.3); border-radius: 3px; }
 
-        /* === WINDOWS === */
-        .os-window { position: absolute; display: none; background: #ece9d8; border: 3px solid #0055ea; border-radius: 8px 8px 0 0; box-shadow: 5px 5px 20px rgba(0,0,0,0.5); z-index: 100; }
-        .window-header { background: linear-gradient(to right, #0058e6, #2881fa); color: white; padding: 5px 10px; font-weight: bold; font-size: 13px; display: flex; justify-content: space-between; align-items: center; cursor: move; border-radius: 5px 5px 0 0; }
+        /* === WINDOWS (XP STYLE) === */
+        .os-window { position: absolute; display: none; background: #ece9d8; border: 3px solid #0055ea; border-radius: 8px 8px 0 0; box-shadow: 5px 5px 20px rgba(0,0,0,0.5); z-index: 100; min-width: 250px;}
+        .window-header { background: linear-gradient(to right, #0058e6, #2881fa); color: white; padding: 5px 10px; font-weight: bold; font-size: 13px; display: flex; justify-content: space-between; align-items: center; cursor: grab; border-radius: 4px 4px 0 0; }
+        .window-header:active { cursor: grabbing; }
         .close-btn { background: #e0645c; color: white; border: 1px solid #fff; border-radius: 3px; cursor: pointer; padding: 0 6px; font-weight: bold; }
-
-        /* === PAINT APP (TCG VIBED) === */
-        #paint-ui-container { background: linear-gradient(135deg, #001f3f 0%, #000000 100%); padding: 10px; border-top: 1px solid #d4af37; }
-        .paint-toolbar { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; background: rgba(255,255,255,0.1); padding: 8px; border-radius: 5px; border: 1px solid #d4af37; }
-        .paint-btn { background: linear-gradient(to bottom, #d4af37, #aa8412); color: #000; font-weight: bold; border: 1px solid #fff; padding: 4px 10px; cursor: pointer; font-size: 11px; box-shadow: 1px 1px 3px rgba(0,0,0,0.5); }
-
-        /* === TCG SHINY EFFECTS === */
-        .card-scene { perspective: 1000px; width: 280px; height: 380px; margin: 15px auto; cursor: pointer; }
-        .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.8s; transform-style: preserve-3d; }
-        .card-inner.is-flipped { transform: rotateY(180deg); }
-        .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; border: 8px solid #c0c0c0; box-sizing: border-box; }
-        .card-front { background: url('fronttcg.png') no-repeat center; background-size: 100% 100%; transform: rotateY(180deg); }
-        .card-back { background: url('tcgicon.PNG') no-repeat center; background-size: 100% 100%; }
-        .card-front::after { content: ""; position: absolute; inset: 0; background: linear-gradient(125deg, transparent 40%, rgba(255,255,255,0.8) 50%, transparent 60%); background-size: 250% 250%; mix-blend-mode: color-dodge; opacity: 0; pointer-events: none; }
-        .card-front:hover::after { opacity: 1; animation: shine 2s infinite linear; }
-        @keyframes shine { 0% { background-position: 200% 200%; } 100% { background-position: -200% -200%; } }
-
-        /* === MINESWEEPER PRO === */
-        #minesweeper-ui { background: #c0c0c0; border: 3px solid #fff; border-right-color: #808080; border-bottom-color: #808080; padding: 6px; }
-        .mine-header { display: flex; justify-content: space-between; align-items: center; background: #c0c0c0; border: 3px inset #fff; padding: 4px 10px; margin-bottom: 6px; }
-        .mine-counter { background: #000; color: #f00; font-family: monospace; font-size: 24px; padding: 2px 4px; border: 2px inset #808080; width: 42px; text-align: center; }
-        #mine-smiley { width: 34px; height: 34px; font-size: 20px; cursor: pointer; background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff; display: flex; align-items: center; justify-content: center; }
-        #mine-grid { display: grid; grid-template-columns: repeat(10, 24px); gap: 0; border: 3px inset #fff; }
-        .mine-cell { width: 24px; height: 24px; background: #c0c0c0; border: 3px solid; border-color: #fff #808080 #808080 #fff; text-align: center; font-size: 14px; line-height: 20px; font-weight: bold; cursor: default; user-select: none; box-sizing: border-box; }
-        .mine-cell.revealed { border: 1px solid #808080; background: #bdbdbd; }
-        .mine-cell.mine { background: #f00; }
-        .mine-cell.c1 { color: blue; } .mine-cell.c2 { color: green; } .mine-cell.c3 { color: red; }
+        .window-content { padding: 10px; }
 
         /* === TASKBAR & START === */
-        #taskbar { position: absolute; bottom: 0; width: 100%; height: 32px; background: linear-gradient(to bottom, #245edb, #1a4299); display: flex; align-items: center; z-index: 9000; }
-        #start-btn { background: linear-gradient(to bottom, #388e3c, #2e7331); color: white; font-weight: bold; font-style: italic; border: none; height: 100%; padding: 0 15px; cursor: pointer; font-size: 15px; border-radius: 0 10px 10px 0; border-right: 1px solid #000; }
+        #taskbar { position: absolute; bottom: 0; width: 100%; height: 32px; background: linear-gradient(to bottom, #245edb 0%, #3f8cf3 9%, #245edb 18%, #1941a5 100%); display: flex; align-items: center; z-index: 9000; }
+        #start-btn { background: linear-gradient(to bottom, #388e3c, #2e7331); color: white; font-weight: bold; font-style: italic; border: none; height: 100%; padding: 0 15px; cursor: pointer; font-size: 15px; border-radius: 0 10px 10px 0; box-shadow: 2px 0 5px rgba(0,0,0,0.3); }
         #task-container { display: flex; height: 100%; flex-grow: 1; padding: 0 5px; gap: 5px; overflow: hidden; }
         .task-tab { background: linear-gradient(to bottom, #3c81f3, #245edb); color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 3px; font-size: 11px; padding: 0 10px; height: 24px; margin: auto 0; display: flex; align-items: center; cursor: pointer; }
-        .task-tab.active { background: #1a4299; box-shadow: inset 1px 1px 3px #000; }
         #clock { color: white; padding-right: 15px; font-size: 11px; font-weight: bold; }
 
-        /* === START MENU === */
-        #start-menu { position: absolute; bottom: 32px; left: 0; width: 250px; background: #fff; border: 2px solid #0055ea; border-bottom: none; display: none; z-index: 10000; box-shadow: 2px -2px 10px rgba(0,0,0,0.3); }
-        .start-header { background: linear-gradient(to bottom, #1d52bf, #4387f4); color: white; padding: 10px; font-weight: bold; }
-        .start-item { padding: 8px 15px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 10px; }
-        .start-item:hover { background: #316ac5; color: white; }
-        .start-footer { background: #d3e5fa; padding: 5px; display: flex; justify-content: flex-end; }
+        /* === NEW MYSPACE LAYOUT === */
+        .myspace-body { background: #E5E5E5; color: #000; font-family: Verdana, Arial, sans-serif; font-size: 10px; }
+        .ms-header { background: #003399; color: white; padding: 10px; font-size: 16px; font-weight: bold; text-align: center; border-bottom: 2px solid #FF9900; }
+        .ms-grid { display: flex; gap: 15px; padding: 15px; }
+        .ms-left { width: 150px; text-align: center; }
+        .ms-right { flex-grow: 1; }
+        .ms-box { background: white; border: 1px solid #6699CC; margin-bottom: 15px; }
+        .ms-box-title { background: #6699CC; color: white; padding: 3px 5px; font-weight: bold; }
+        .ms-top8 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; padding: 5px; text-align: center; }
+        .ms-top8 img { width: 100%; border: 1px solid #000; }
+
+        /* Hide T-Rex & Paint/TCG extra CSS to save space here, assuming you link them or keep them inline */
+        #crashOverlay, #rebootOverlay { display: none; position: fixed; inset: 0; z-index: 10001; background: #000; }
+        .system-failure { animation: screenShake 0.1s infinite; filter: contrast(2) saturate(1.5) brightness(1.1); }
+        @keyframes screenShake { 0% { transform: translate(0,0); } 25% { transform: translate(2px, -2px); } }
     </style>
 </head>
 <body>
 
     <div id="boot-screen">
-        <img src="egalogo.png" style="width:100px; filter:grayscale(1) brightness(2);">
         <div class="ascii-marine"> o/ \n/| ===--- \n/ \ </div>
         <p>KERRIGAN STUDIO OS [Version 4.1.36]</p>
         <p>SYSTEM: Patrick Kerrigan | USMC 06-10</p>
-        <p>STATUS: INITIALIZING DINO TRAP 2.0...</p>
+        <p>STATUS: INITIALIZING SYSTEM...</p>
     </div>
-    <div id="shutdown-screen">IT IS NOW SAFE TO TURN OFF YOUR COMPUTER.</div>
-    <div id="rabbit-hole-overlay"><canvas id="matrix-canvas"></canvas><div id="terminal-text"></div></div>
+    
+    <div id="totem-overlay">
+        <h1 id="totem-text">Whose dream are we in?</h1>
+        <p>You need to wake up.</p>
+        <button class="wake-up-btn" onclick="window.location.href='https://kerriganartstudioportfolio.my.canva.site/patrick-kerrigan-graphic-designer-2026'">[KICK TO PORTFOLIO]</button>
+    </div>
     <div id="crashOverlay"><video id="dinoVideo" src="trex.mp4" style="width:100%;height:100%;object-fit:cover;"></video></div>
-    <div id="rebootOverlay" class="reboot-screen"><pre id="rebootLog"></pre></div>
+    <div id="rebootOverlay" style="color:#3f0; padding:40px; font-family:monospace;"><pre id="rebootLog"></pre></div>
     <div id="crt-overlay"></div>
 
     <div id="desktop-wrapper">
         <div id="desktop">
-            <div class="desktop-icon" ondblclick="openWin('paint-window', 'Paint')"><img src="painticon.png" onerror="this.src='https://img.icons8.com/color/48/000000/ms-paint.png'"><div>Paint App</div></div>
-            <div class="desktop-icon" ondblclick="openWin('tcg-window', 'TCG')"><img src="tcgicon.PNG"><div>Kerrigan TCG</div></div>
-            <div class="desktop-icon" ondblclick="openWin('gb-window', 'Gameboy')"><img src="https://img.icons8.com/color/48/000000/nintendo-gameboy-color.png"><div>Gameboy.exe</div></div>
-            <div class="desktop-icon" ondblclick="openAkGrazing()"><img src="https://img.icons8.com/color/48/000000/myspace.png"><div>Ak_Grazing.spc</div></div>
+            <div class="desktop-icon" ondblclick="openWin('paint-window', 'Paint')"><img src="https://win98icons.alexmeub.com/icons/png/paint_old-0.png"><div>Paint App</div></div>
+            <div class="desktop-icon" ondblclick="openWin('tcg-window', 'TCG')"><img src="https://win98icons.alexmeub.com/icons/png/cards-0.png"><div>Kerrigan TCG</div></div>
+           <div class="desktop-icon" ondblclick="openWin('gb-window', 'Gameboy')">
+    <img src="gameboyicon.png">
+    <div>Gameboy.exe</div>
+</div>
+            <div class="desktop-icon" ondblclick="openWin('myspace-window', 'MySpace')"><img src="https://img.icons8.com/color/48/000000/myspace.png"><div>Ak_Grazing.spc</div></div>
             <div class="desktop-icon" ondblclick="openWin('tischlers-window', 'Tischlers')"><img src="https://img.icons8.com/color/48/000000/shop.png"><div>Tischlers.exe</div></div>
-            <div class="desktop-icon" ondblclick="window.open('Patrick2026resume.pdf', '_blank')"><img src="https://img.icons8.com/color/48/000000/resume.png"><div>Get_Resume.exe</div></div>
-            <div class="desktop-icon" ondblclick="triggerRabbitHole()"><img src="iconwhiterabbit.png"><div>White_Rabbit.exe</div></div>
-            <div class="desktop-icon" ondblclick="openWin('minesweeper-window', 'Mines')"><img src="iconminesweeper.png"><div>Minesweeper</div></div>
-            <div class="desktop-icon" ondblclick="triggerSystemFailure()"><img src="https://img.icons8.com/color/48/000000/biohazard.png"><div style="color:red; font-weight:bold;">DO NOT CLICK</div></div>
+            <div class="desktop-icon" ondblclick="window.open('https://drive.google.com/file/d/1aFLH23YTGQPCAKYtwsxA23GtRa5VoWhp/view?usp=drive_link', '_blank')"><img src="https://win98icons.alexmeub.com/icons/png/directory_closed-4.png"><div>Get_Resume.exe</div></div>
+            <div class="desktop-icon" ondblclick="openWin('video-window', 'YouTube')"><img src="https://win98icons.alexmeub.com/icons/png/movie_maker-0.png"><div>Video_Player</div></div>
+            <div class="desktop-icon" ondblclick="openWin('gallery-window', 'Gallery')"><img src="https://win98icons.alexmeub.com/icons/png/image_file-0.png"><div>Gallery.exe</div></div>
+            <div class="desktop-icon" ondblclick="triggerTotem()"><img src="https://win98icons.alexmeub.com/icons/png/cd_audio_cd_a-4.png"><div>Totem.exe</div></div>
+            <div class="desktop-icon" ondblclick="triggerSystemFailure()"><img src="https://win98icons.alexmeub.com/icons/png/msg_error-0.png"><div style="color:red; font-weight:bold;">DO NOT CLICK</div></div>
         </div>
     </div>
 
-    <div id="start-menu">
-        <div class="start-header">Kerrigan Studio</div>
-        <div class="start-item" onclick="openWin('paint-window', 'Paint')">🎨 Paint App</div>
-        <div class="start-item" onclick="openWin('minesweeper-window', 'Mines')">💣 Minesweeper</div>
-        <div style="flex-grow:1"></div>
-        <div class="start-footer"><button class="close-btn" style="background:#f90; border:1px solid #000;" onclick="triggerShutdown()">Turn Off Computer</button></div>
-    </div>
-
-    <div id="taskbar"><button id="start-btn" onclick="toggleStartMenu()">start</button><div id="task-container"></div><div id="clock">12:00 PM</div></div>
-
-    <div class="os-window" id="minesweeper-window" style="top:15%; left:35%; width:270px;">
-        <div class="window-header" id="msw-drag"><span>Minesweeper</span><button class="close-btn" onclick="closeWin('minesweeper-window')">X</button></div>
-        <div id="minesweeper-ui">
-            <div class="mine-header">
-                <div id="mine-count" class="mine-counter">010</div>
-                <div id="mine-smiley" onclick="initMines()">😊</div>
-                <div id="mine-timer" class="mine-counter">000</div>
-            </div>
-            <div id="mine-grid"></div>
-        </div>
-    </div>
+    <div id="taskbar"><button id="start-btn">start</button><div id="task-container"></div><div id="clock">12:00 PM</div></div>
 
     <div class="os-window" id="paint-window" style="top:5%; left:15%; width:500px;">
-        <div class="window-header" id="p-drag"><span>Paint App - Studio Edition</span><button class="close-btn" onclick="closeWin('paint-window')">X</button></div>
-        <div id="paint-ui-container">
-            <div class="paint-toolbar">
+        <div class="window-header"><span>Paint App - Studio Edition</span><button class="close-btn" onclick="closeWin('paint-window')">X</button></div>
+        <div class="window-content" style="background: linear-gradient(135deg, #001f3f 0%, #000000 100%);">
+            <div style="display: flex; gap: 10px; margin-bottom: 10px; background: rgba(255,255,255,0.1); padding: 8px; border: 1px solid #d4af37;">
                 <input type="color" id="p-color" value="#d4af37"><input type="range" id="p-size" min="1" max="25" value="3">
-                <button class="paint-btn" onclick="clearPaint()">CLEAR</button><button class="paint-btn" onclick="savePaint()">SAVE</button>
+                <button onclick="clearPaint()" style="background: #d4af37; font-weight: bold; cursor: pointer; color: black; border: 1px solid white;">CLEAR</button>
+                <button onclick="savePaint()" style="background: #d4af37; font-weight: bold; cursor: pointer; color: black; border: 1px solid white;">SAVE</button>
             </div>
-            <canvas id="p-canvas" width="475" height="320" style="background:#fff; border:4px solid #d4af37; cursor:crosshair;"></canvas>
+            <canvas id="p-canvas" width="455" height="300" style="background:#fff; border:4px solid #d4af37; cursor:crosshair;"></canvas>
         </div>
     </div>
 
-    <div class="os-window" id="tischlers-window" style="top:10%; left:20%; width:400px;">
-        <div class="window-header" id="t-drag"><span>Tischlers Uptown Market</span><button class="close-btn" onclick="closeWin('tischlers-window')">X</button></div>
-        <div style="padding:20px; background:#fff; border-top:2px solid #2e7d32;">
-            <h2 style="color:#1b5e20; margin-top:0;">Tischler Finer Foods</h2>
-            <button onclick="window.open('https://tischlerfinerfoods.com/', '_blank')" style="background:#2e7d32; color:white; border:none; padding:8px; cursor:pointer;">WEBSITE</button>
-            <button onclick="window.open('https://www.instagram.com/tischlerfinerfoods/', '_blank')" style="background:linear-gradient(45deg, #f09433, #dc2743); color:white; border:none; padding:8px; cursor:pointer;">INSTA</button>
-        </div>
-    </div>
-
-    <div class="os-window" id="tcg-window" style="top:10%; left:50%; width:320px;">
-        <div class="window-header" id="t-drag-tcg"><span>Kerrigan TCG</span><button class="close-btn" onclick="closeWin('tcg-window')">X</button></div>
-        <div style="padding:10px; background:#111; text-align:center;">
-            <div class="card-scene" onclick="document.getElementById('c-inner').classList.toggle('is-flipped')">
-                <div class="card-inner" id="c-inner"><div class="card-face card-back"></div><div class="card-face card-front"></div></div>
+    <div class="os-window" id="tcg-window" style="top:10%; left:50%; width:300px;">
+        <div class="window-header"><span>Kerrigan TCG</span><button class="close-btn" onclick="closeWin('tcg-window')">X</button></div>
+        <div class="window-content" style="background:#111; text-align:center; perspective:1000px; padding: 20px;">
+            <div id="card-inner" style="width:250px; height:350px; margin:0 auto; position:relative; transition:transform 0.8s; transform-style:preserve-3d; cursor:pointer;" onclick="this.style.transform = this.style.transform === 'rotateY(180deg)' ? 'rotateY(0deg)' : 'rotateY(180deg)'">
+                <div style="position:absolute; width:100%; height:100%; backface-visibility:hidden; background: url('fronttcg.png') center/cover; border: 6px solid #c0c0c0; border-radius:10px; transform: rotateY(180deg);"></div>
+                <div style="position:absolute; width:100%; height:100%; backface-visibility:hidden; background: url('tcgicon.PNG') center/cover; border: 6px solid #c0c0c0; border-radius:10px;"></div>
             </div>
         </div>
     </div>
 
     <div class="os-window" id="gb-window" style="top:15%; left:10%; width:400px;">
-        <div class="window-header" id="g-drag"><span>Gameboy.exe</span><button class="close-btn" onclick="closeWin('gb-window')">X</button></div>
-        <div style="padding:20px; background:#333; text-align:center;">
-            <div id="gb-screen" style="width:100%; height:220px; background:#000; border:15px solid #111; border-radius:5px;"></div>
-            <div style="margin-top:10px;"><button onclick="swapGame('legendofZeldaTheOracle.gbc')">Zelda</button><button onclick="swapGame('SuperMarioBrosDeluxe.gbc')">Mario</button></div>
+        <div class="window-header"><span>Gameboy.exe</span><button class="close-btn" onclick="closeWin('gb-window')">X</button></div>
+        <div class="window-content" style="background:#333; text-align:center;">
+            <div id="gb-screen" style="width:100%; height:250px; background:#000; border:10px solid #111; border-radius:5px;"></div>
+            <div style="margin-top:10px;">
+                <button onclick="swapGame('legendofZeldaTheOracle.gbc')">Zelda</button>
+                <button onclick="swapGame('SuperMarioBrosDeluxe.gbc')">Mario</button>
+            </div>
         </div>
     </div>
 
-    <div class="os-window" id="myspace-window" style="top:5%; left:25%; width:600px; border:3px solid #003399;">
-        <div class="window-header" id="m-drag"><span>MySpace - Ak_Grazing</span><button class="close-btn" onclick="closeWin('myspace-window'); document.getElementById('ms-audio').pause();">X</button></div>
-        <div style="padding:15px; background:#fff; height:400px; overflow-y:auto; font-family:Verdana; color:#333;">
-            <h1 style="color:#003399; border-bottom:2px solid #ff9900; margin:0;">AK. Grazing. Co</h1>
-            <div style="display:flex; gap:20px; margin-top:10px;">
-                <div style="width:180px; text-align:center;">
-                    <img src="myspaceak.png" style="width:150px; border:1px solid #000;">
-                    <div style="margin-top:15px; border:2px solid #333; background:#e5e5e5; padding:5px;">
-                        <audio id="ms-audio" src="mcr.m4a" loop></audio>
-                        <button onclick="document.getElementById('ms-audio').play()" style="font-size:10px;">Play</button><button onclick="document.getElementById('ms-audio').pause()" style="font-size:10px;">Stop</button>
-                    </div>
+    <div class="os-window" id="myspace-window" style="top:5%; left:20%; width:600px;">
+        <div class="window-header"><span>MySpace - Ak_Grazing</span><button class="close-btn" onclick="closeWin('myspace-window')">X</button></div>
+        <div class="window-content myspace-body" style="height:400px; overflow-y:auto; padding:0;">
+            <div class="ms-header">AK. Grazing. Co</div>
+            <div class="ms-grid">
+                <div class="ms-left">
+                    <h2 style="margin:0; font-size:14px;">Ak_Grazing</h2>
+                    <img src="myspaceak.png" onerror="this.src='https://placehold.co/120x120'" style="width:120px; border:2px solid #000; margin-top:5px;">
+                    <div style="margin-top:10px;">"Cheese is life."</div>
+                    <button onclick="window.open('https://www.instagram.com/ak.grazing.co/')" style="margin-top:10px;">View Instagram</button>
                 </div>
-                <div style="flex-grow:1;">
-                    <div style="border:1px solid #6699cc; background:#d5e5ff; padding:5px; font-weight:bold; color:#003399;">Top 4 Cheeses</div>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px; font-size:10px; font-weight:bold;">
-                        <div style="text-align:center;"><div style="height:60px; background:#eee; border:1px solid #ccc; display:flex; align-items:center; justify-content:center; font-size:20px;">🧀</div>Aged Cheddar</div>
-                        <div style="text-align:center;"><div style="height:60px; background:#eee; border:1px solid #ccc; display:flex; align-items:center; justify-content:center; font-size:20px;">🧀</div>Creamy Brie</div>
+                <div class="ms-right">
+                    <div class="ms-box">
+                        <div class="ms-box-title">About Me</div>
+                        <div style="padding:10px;">Curating the best charcuterie and grazing boards. Chicago area. Custom orders for any event!</div>
+                    </div>
+                    <div class="ms-box">
+                        <div class="ms-box-title">Ak_Grazing's Top 4</div>
+                        <div class="ms-top8">
+                            <div><div style="background:#eee; height:60px; line-height:60px; font-size:24px;">🧀</div>Brie</div>
+                            <div><div style="background:#eee; height:60px; line-height:60px; font-size:24px;">🍇</div>Grapes</div>
+                            <div><div style="background:#eee; height:60px; line-height:60px; font-size:24px;">🥖</div>Baguette</div>
+                            <div><div style="background:#eee; height:60px; line-height:60px; font-size:24px;">🍯</div>Honey</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        // SYSTEM CORE
-        window.onload = () => { 
-            if(sessionStorage.getItem('q_boot') === 'true') { document.getElementById('boot-screen').style.display = 'none'; sessionStorage.setItem('q_boot', 'false'); }
-            else { setTimeout(() => { document.getElementById('boot-screen').style.opacity='0'; setTimeout(()=>document.getElementById('boot-screen').style.display='none', 1000); }, 3000); }
-            initMines();
-        };
-        setInterval(() => { const n=new Date(); document.getElementById('clock').innerText = n.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }, 1000);
+   <div class="os-window" id="video-window" style="top:10%; left:25%; width:500px;">
+        <div class="window-header"><span>Kerrigan Studio - Video Reels</span><button class="close-btn" onclick="closeWin('video-window')">X</button></div>
+        <div class="window-content" style="background:#111; color:white; text-align:center;">
+            <h3 style="margin-top: 5px;">Endur / FOB Afghanistan Tribute</h3>
+            <div style="padding: 10px; border: 2px dashed #444; margin-bottom: 10px; background: #000;">
+                <iframe width="100%" height="250" src="https://www.youtube.com/embed/fVA7WsXZrnw?si=H4uy0Lq2PDqB01Mq" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <p style="font-size: 12px; color: #ccc;">Commemorative animation of a mortar call for fire.</p>
+            </div>
+            <button onclick="window.open('https://www.youtube.com/@kerriganstudio', '_blank')" style="background: #e0645c; color: white; border: 1px solid #fff; padding: 5px 15px; cursor: pointer; font-weight: bold;">Open Kerrigan Channel</button>
+        </div>
+    </div>
+    <div class="os-window" id="gallery-window" style="top:15%; left:30%; width:400px;">
+        <div class="window-header"><span>Photography Archive</span><button class="close-btn" onclick="closeWin('gallery-window')">X</button></div>
+        <div class="window-content" style="background:#fff; text-align:center;">
+            <h4>Nikon Zfc: Analog Meets Digital</h4>
+            <div style="background:#ccc; height:150px; display:flex; align-items:center; justify-content:center; margin-bottom:10px; border:1px solid #000;">
+                [Insert Photography File Here]
+            </div>
+        </div>
+    </div>
 
+    <div class="os-window" id="tischlers-window" style="top:10%; left:40%; width:300px;">
+        <div class="window-header"><span>Tischlers Uptown Market</span><button class="close-btn" onclick="closeWin('tischlers-window')">X</button></div>
+        <div class="window-content" style="background:#fff; border-top:2px solid #2e7d32; text-align:center;">
+            <h2 style="color:#1b5e20;">Tischler Finer Foods</h2>
+            <button onclick="window.open('https://tischlerfinerfoods.com/')">Website</button>
+        </div>
+    </div>
+
+    <script>
+        // --- SYSTEM BOOT ---
+        window.onload = () => { setTimeout(() => { document.getElementById('boot-screen').style.display = 'none'; }, 2000); };
+        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }, 1000);
+
+        // --- WINDOW MANAGEMENT (Z-INDEX & OPEN/CLOSE) ---
+        let highestZ = 100;
         const taskContainer = document.getElementById('task-container');
-        function toggleStartMenu() { const menu = document.getElementById('start-menu'); menu.style.display = (menu.style.display==='block') ? 'none' : 'block'; }
         
         function openWin(id, label) {
-            document.getElementById('start-menu').style.display = 'none';
-            const win = document.getElementById(id); win.style.display = 'block'; win.style.zIndex = 1000;
+            const win = document.getElementById(id); 
+            win.style.display = 'block'; 
+            highestZ++; win.style.zIndex = highestZ;
+            
             if(!document.getElementById('tab-' + id)) {
                 const tab = document.createElement('div'); tab.id = 'tab-' + id; tab.className = 'task-tab active'; tab.innerText = label;
-                tab.onclick = () => { if(win.style.display==='none'){ win.style.display='block'; tab.classList.add('active'); } else { win.style.display='none'; tab.classList.remove('active'); } };
+                tab.onclick = () => { win.style.display = win.style.display==='none' ? 'block' : 'none'; highestZ++; win.style.zIndex = highestZ; };
                 taskContainer.appendChild(tab);
             }
         }
-        function closeWin(id) { document.getElementById(id).style.display = 'none'; const tab = document.getElementById('tab-' + id); if(tab) tab.remove(); }
-        function openAkGrazing() { openWin('myspace-window', 'MySpace'); document.getElementById('ms-audio').play(); }
-
-        function makeDraggable(w, h) {
-            h.onmousedown = (e) => {
-                let p3=e.clientX, p4=e.clientY;
-                document.onmousemove = (ev) => { w.style.top = (w.offsetTop - (p4 - ev.clientY)) + "px"; w.style.left = (w.offsetLeft - (p3 - ev.clientX)) + "px"; p3=ev.clientX; p4=ev.clientY; };
-                document.onmouseup = () => document.onmousemove = null;
-            };
-        }
-        makeDraggable(document.getElementById('paint-window'), document.getElementById('p-drag'));
-        makeDraggable(document.getElementById('tcg-window'), document.getElementById('t-drag-tcg'));
-        makeDraggable(document.getElementById('gb-window'), document.getElementById('g-drag'));
-        makeDraggable(document.getElementById('myspace-window'), document.getElementById('m-drag'));
-        makeDraggable(document.getElementById('minesweeper-window'), document.getElementById('msw-drag'));
-        makeDraggable(document.getElementById('tischlers-window'), document.getElementById('t-drag'));
-
-        // PAINT
-        const canvas = document.getElementById('p-canvas'); const ctx = canvas.getContext('2d'); let painting = false;
-        ctx.fillStyle = "white"; ctx.fillRect(0,0,475,320);
-        canvas.onmousedown = () => { painting = true; ctx.beginPath(); };
-        canvas.onmouseup = () => painting = false;
-        canvas.onmousemove = (e) => {
-            if(!painting) return; const r=canvas.getBoundingClientRect();
-            ctx.lineWidth = document.getElementById('p-size').value; ctx.strokeStyle = document.getElementById('p-color').value;
-            ctx.lineCap = 'round'; ctx.lineTo(e.clientX-r.left, e.clientY-r.top); ctx.stroke();
-        };
-        function clearPaint() { ctx.fillRect(0,0,475,320); }
-        function savePaint() { const a=document.createElement('a'); a.href=canvas.toDataURL(); a.download='art.png'; a.click(); }
-
-        // MINESWEEPER LOGIC
-        let minesArr = [], revealedCount = 0, isGameOver = false, timer = 0, timerInt;
-        function initMines() {
-            const grid = document.getElementById('mine-grid'); grid.innerHTML = '';
-            minesArr = Array(100).fill(0); revealedCount = 0; isGameOver = false;
-            clearInterval(timerInt); timer = 0; document.getElementById('mine-timer').innerText = '000';
-            document.getElementById('mine-smiley').innerText = '😊';
-            let mCount = 0;
-            while(mCount < 10) { let r = Math.floor(Math.random()*100); if(minesArr[r] !== 'M') { minesArr[r] = 'M'; mCount++; } }
-            for(let i=0; i<100; i++) {
-                let cell = document.createElement('div'); cell.className = 'mine-cell';
-                cell.onclick = () => revealCell(i, cell);
-                grid.appendChild(cell);
-            }
-        }
-        function revealCell(idx, cell) {
-            if(isGameOver || cell.classList.contains('revealed')) return;
-            if(revealedCount === 0) timerInt = setInterval(() => { timer++; document.getElementById('mine-timer').innerText = timer.toString().padStart(3, '0'); }, 1000);
-            if(minesArr[idx] === 'M') {
-                isGameOver = true; cell.classList.add('mine'); cell.innerText = '💣';
-                document.getElementById('mine-smiley').innerText = '😵';
-                clearInterval(timerInt); return;
-            }
-            cell.classList.add('revealed'); revealedCount++;
-            if(revealedCount === 90) { document.getElementById('mine-smiley').innerText = '😎'; isGameOver = true; clearInterval(timerInt); }
+        
+        function closeWin(id) { 
+            document.getElementById(id).style.display = 'none'; 
+            const tab = document.getElementById('tab-' + id); if(tab) tab.remove(); 
         }
 
-        // FAILURE / RABBIT HOLE / SHUTDOWN
+        // --- DRAGGABLE WINDOWS (FIXED) ---
+        document.querySelectorAll('.os-window').forEach(win => {
+            const header = win.querySelector('.window-header');
+            let isDragging = false, startX, startY, initialX, initialY;
+
+            // Click to bring to front
+            win.addEventListener('mousedown', () => { highestZ++; win.style.zIndex = highestZ; });
+
+            header.addEventListener('mousedown', (e) => {
+                isDragging = true; startX = e.clientX; startY = e.clientY;
+                initialX = win.offsetLeft; initialY = win.offsetTop;
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                win.style.left = `${initialX + (e.clientX - startX)}px`;
+                win.style.top = `${initialY + (e.clientY - startY)}px`;
+            });
+
+            document.addEventListener('mouseup', () => { isDragging = false; });
+        });
+
+        // --- INCEPTION TOTEM 4TH WALL BREAK ---
+        function triggerTotem() {
+            document.body.classList.add('inception-dream'); // Inverts the whole screen
+            setTimeout(() => {
+                document.getElementById('totem-overlay').style.display = 'flex';
+            }, 1500);
+        }
+
+        // --- SYSTEM FAILURE (T-REX) ---
         function triggerSystemFailure() {
             document.body.classList.add('system-failure');
             setTimeout(() => {
                 document.getElementById('crashOverlay').style.display = 'block';
-                const v = document.getElementById('dinoVideo');
-                v.play();
+                const v = document.getElementById('dinoVideo'); v.play();
                 v.onended = () => {
                     document.getElementById('crashOverlay').style.display = 'none';
                     document.getElementById('rebootOverlay').style.display = 'block';
-                    runReboot();
+                    document.getElementById('rebootLog').innerText = "RECOVERING SECTORS...\nSYSTEM REBOOTED.";
+                    setTimeout(()=> { document.getElementById('rebootOverlay').style.display = 'none'; document.body.classList.remove('system-failure'); }, 2000);
                 };
             }, 500);
         }
-        function runReboot() {
-            const log = document.getElementById('rebootLog');
-            const lines = ["RECOVERING SECTORS...", "CHECKING INTEGRITY...", "SYSTEM REBOOTED."];
-            let i = 0; const int = setInterval(() => { log.innerHTML += lines[i] + "\n"; i++; if (i >= lines.length) { clearInterval(int); setTimeout(() => { document.getElementById('rebootOverlay').style.display = 'none'; document.body.classList.remove('system-failure'); }, 1500); } }, 800);
-        }
-        function triggerRabbitHole() {
-            document.getElementById('desktop-wrapper').classList.add('crt-shutdown');
-            setTimeout(() => {
-                const overlay = document.getElementById('rabbit-hole-overlay'); overlay.style.display = 'flex';
-                typeTerminal("Wake up, Patrick...\nThe Matrix has you...", () => {
-                    startMatrix();
-                    setTimeout(() => { window.location.href = "https://kerriganartstudioportfolio.my.canva.site/patrick-kerrigan-graphic-designer-2026"; }, 3000);
-                });
-            }, 800);
-        }
-        function triggerShutdown() {
-            document.getElementById('start-menu').style.display = 'none';
-            document.getElementById('desktop-wrapper').classList.add('crt-shutdown');
-            setTimeout(() => { document.getElementById('shutdown-screen').style.display = 'flex'; }, 800);
-        }
-        function typeTerminal(text, cb) {
-            let i = 0; const target = document.getElementById('terminal-text');
-            const interval = setInterval(() => { target.innerText += text[i]; i++; if (i >= text.length) { clearInterval(interval); setTimeout(cb, 1000); } }, 100);
-        }
-        function startMatrix() {
-            const c = document.getElementById('matrix-canvas'); const mctx = c.getContext('2d'); c.width = window.innerWidth; c.height = window.innerHeight;
-            const drops = Array(Math.floor(c.width/20)).fill(1);
-            setInterval(() => {
-                mctx.fillStyle = "rgba(0,0,0,0.05)"; mctx.fillRect(0,0,c.width,c.height);
-                mctx.fillStyle = "#0F0"; mctx.font = "20px monospace";
-                drops.forEach((y, i) => { mctx.fillText(Math.floor(Math.random()*2), i*20, y*20); if(y*20 > c.height && Math.random() > 0.975) drops[i] = 0; drops[i]++; });
-            }, 33);
-        }
 
+        // --- PAINT APP LOGIC ---
+        const canvas = document.getElementById('p-canvas'); 
+        const ctx = canvas.getContext('2d'); 
+        let painting = false;
+        
+        ctx.fillStyle = "white"; ctx.fillRect(0,0, canvas.width, canvas.height);
+        
+        function startPosition(e) { painting = true; draw(e); }
+        function endPosition() { painting = false; ctx.beginPath(); }
+        function draw(e) {
+            if(!painting) return; 
+            const r = canvas.getBoundingClientRect();
+            ctx.lineWidth = document.getElementById('p-size').value; 
+            ctx.lineCap = 'round'; 
+            ctx.strokeStyle = document.getElementById('p-color').value;
+            ctx.lineTo(e.clientX - r.left, e.clientY - r.top); 
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - r.left, e.clientY - r.top);
+        }
+        
+        canvas.addEventListener('mousedown', startPosition);
+        canvas.addEventListener('mouseup', endPosition);
+        canvas.addEventListener('mousemove', draw);
+        
+        function clearPaint() { ctx.fillStyle = "white"; ctx.fillRect(0,0, canvas.width, canvas.height); }
+        function savePaint() { const a=document.createElement('a'); a.href=canvas.toDataURL(); a.download='kerrigan_art.png'; a.click(); }
+
+        // --- GAMEBOY EMULATOR LOGIC ---
         let activeRom = localStorage.getItem('k_rom_v36') || 'legendofZeldaTheOracle.gbc';
-        function swapGame(rom) { localStorage.setItem('k_rom_v36', rom); sessionStorage.setItem('q_boot', 'true'); window.location.reload(); }
-        var EJS_player = '#gb-screen'; var EJS_core = 'gbc'; var EJS_gameUrl = activeRom; var EJS_pathtodata = 'https://cdn.emulatorjs.org/latest/data/';
+        function swapGame(rom) { localStorage.setItem('k_rom_v36', rom); window.location.reload(); }
+        var EJS_player = '#gb-screen'; 
+        var EJS_core = 'gbc'; 
+        var EJS_gameUrl = activeRom; 
+        var EJS_pathtodata = 'https://cdn.emulatorjs.org/latest/data/';
     </script>
     <script src="https://cdn.emulatorjs.org/latest/data/loader.js"></script>
 </body>
