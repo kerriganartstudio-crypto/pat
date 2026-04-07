@@ -195,7 +195,7 @@
 
     <script>
         // --- SYSTEM BOOT ---
-        window.onload = () => { setTimeout(() => { document.getElementById('boot-screen').style.display = 'none'; }, 2000); };
+         setTimeout(() => { document.getElementById('boot-screen').style.display = 'none'; }, 2000);
         setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }, 1000);
 
         // --- WINDOW MANAGEMENT (Z-INDEX & OPEN/CLOSE) ---
