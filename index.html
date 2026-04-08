@@ -244,12 +244,60 @@
             document.addEventListener('mouseup', () => { isDragging = false; });
         });
 
-   // --- INCEPTION TOTEM 4TH WALL BREAK ---
-function triggerTotem() {document.body.classList.add('inception-dream'); // Inverts the whole screen
-    setTimeout(() => {document.getElementById('totem-overlay').style.display = 'flex';
-    }, 1500);
-}
+  // --- INCEPTION TOTEM 4TH WALL BREAK (CINEMATIC) ---
+function triggerTotem() {
+    // 1. Blackout the OS completely
+    document.body.style.background = "#000";
+    document.getElementById("desktop-wrapper").style.display = "none";
+    document.getElementById("taskbar").style.display = "none";
 
+    // 2. Inject the Matrix Canvas
+    document.body.insertAdjacentHTML('beforeend', '<canvas id="stargateCanvas" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999999;"></canvas>');
+    const c = document.getElementById("stargateCanvas");
+    const ctx = c.getContext("2d");
+    c.width = window.innerWidth;
+    c.height = window.innerHeight;
+
+    // Authentic Katakana & Numeric characters for the rain
+    const chars = "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789".split("");
+    const fontSize = 18;
+    const columns = c.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(1);
+
+    // Run the Matrix Rain
+    const matrix = setInterval(() => {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+        ctx.fillRect(0, 0, c.width, c.height);
+        ctx.fillStyle = "#0F0"; // Neon Green
+        ctx.font = fontSize + "px monospace";
+        for (let i = 0; i < drops.length; i++) {
+            const text = chars[Math.floor(Math.random() * chars.length)];
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+            if (drops[i] * fontSize > c.height && Math.random() > 0.975) drops[i] = 0;
+            drops[i]++;
+        }
+    }, 33);
+
+    // 3. Stargate Warp! (Triggers after 4 seconds)
+    setTimeout(() => {
+        // Stretches, spins, and cycles colors to simulate hitting a wormhole
+        c.style.transition = "transform 4s cubic-bezier(0.5, 0, 0.1, 1), filter 4s linear";
+        c.style.transform = "scale(60) rotate(25deg)";
+        c.style.filter = "hue-rotate(720deg) contrast(400%) blur(2px)";
+    }, 4000);
+
+    // 4. Fade into the Void & Reveal Text
+    setTimeout(() => {
+        clearInterval(matrix);
+        c.style.transition = "opacity 2s ease";
+        c.style.opacity = "0";
+        setTimeout(() => {
+            document.getElementById("totem-overlay").style.display = "flex";
+            document.getElementById("totem-overlay").style.zIndex = "99999999";
+            c.remove(); // Clean up the canvas
+        }, 2000);
+    }, 8000);
+}
         // --- SYSTEM FAILURE (T-REX) ---
         function triggerSystemFailure() {
             document.body.classList.add('system-failure');
