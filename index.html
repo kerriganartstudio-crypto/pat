@@ -244,13 +244,11 @@
             document.addEventListener('mouseup', () => { isDragging = false; });
         });
 
-        // --- INCEPTION TOTEM 4TH WALL BREAK ---
-        function triggerTotem() {
-            document.body.classList.add('inception-dream'); // Inverts the whole screen
-            setTimeout(() => {
-                document.getElementById('totem-overlay').style.display = 'flex';
-            }, 1500);
-        }
+   // --- INCEPTION TOTEM 4TH WALL BREAK ---
+function triggerTotem() {document.body.classList.add('inception-dream'); // Inverts the whole screen
+    setTimeout(() => {document.getElementById('totem-overlay').style.display = 'flex';
+    }, 1500);
+}
 
         // --- SYSTEM FAILURE (T-REX) ---
         function triggerSystemFailure() {
