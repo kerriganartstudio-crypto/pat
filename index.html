@@ -27,10 +27,18 @@
         #shutdown-screen { display: none; justify-content: center; align-items: center; text-align: center; color: #f90; font-size: 24px; }
         .ascii-marine { color: #3f0; white-space: pre; font-weight: bold; margin: 20px 0; }
 
-        /* === INCEPTION TOTEM EFFECT === */
-        .inception-dream { filter: invert(1) hue-rotate(180deg) blur(1px); transform: scale(1.05); }
-        #totem-overlay { position: fixed; inset: 0; z-index: 1000000; background: rgba(0,0,0,0.8); display: none; flex-direction: column; justify-content: center; align-items: center; color: white; font-family: 'Courier New', monospace; text-align: center; }
-        .wake-up-btn { margin-top: 20px; padding: 10px 20px; background: white; color: black; font-weight: bold; cursor: pointer; border: 2px solid black; }
+       /* === EPIC INCEPTION / 2001 STARGATE EFFECT === */
+.inception-dream {
+    animation: stargateWarp 3.5s ease-in forwards;
+}
+
+@keyframes stargateWarp {
+    0% { transform: scale(1) rotate(0deg); filter: hue-rotate(0deg) blur(0px); }
+    25% { transform: scale(1.5) rotate(2deg); filter: invert(1) hue-rotate(90deg) blur(2px) contrast(1.5); }
+    50% { transform: scale(3) rotate(-3deg); filter: invert(0) hue-rotate(180deg) blur(4px) contrast(2); }
+    75% { transform: scale(8) rotate(5deg); filter: invert(1) hue-rotate(270deg) blur(8px) contrast(3); }
+    100% { transform: scale(30) rotate(15deg); filter: invert(1) hue-rotate(360deg) blur(12px) contrast(5) brightness(0); }
+}
 
         /* === DESKTOP ICONS === */
         #desktop { display: flex; flex-direction: column; flex-wrap: wrap; height: calc(100vh - 40px); padding: 15px; align-content: flex-start; }
@@ -433,9 +441,19 @@ function updateArt() {
 
 // --- 5. SYSTEM APPS (Totem & Crash) ---
 function triggerTotem() {
-    // This triggers the screen blur and color inversion animation!
+    // 1. Start the massive 2001 Space Odyssey warp effect
     document.body.classList.add('inception-dream'); 
-    document.getElementById('totem-overlay').style.display = 'flex';
+    
+    // 2. Wait for the screen to be completely "sucked in" before showing the text
+    setTimeout(() => {
+        document.body.style.background = "#000"; // Turn the void black
+        document.getElementById('desktop-wrapper').style.display = "none";
+        document.getElementById('taskbar').style.display = "none";
+        document.body.classList.remove('inception-dream'); // Reset zoom so text is readable
+        
+        // Boom. Show the text.
+        document.getElementById('totem-overlay').style.display = 'flex';
+    }, 3400); // This triggers right as the 3.5-second animation peaks
 }
 
 function triggerSystemFailure() {
