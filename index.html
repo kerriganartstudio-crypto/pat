@@ -74,7 +74,48 @@
         /* Hide T-Rex & Paint/TCG extra CSS to save space here, assuming you link them or keep them inline */
         #crashOverlay, #rebootOverlay { display: none; position: fixed; inset: 0; z-index: 10001; background: #000; }
         .system-failure { animation: screenShake 0.1s infinite; filter: contrast(2) saturate(1.5) brightness(1.1); }
-        @keyframes screenShake { 0% { transform: translate(0,0); } 25% { transform: translate(2px, -2px); } }
+        @keyframes screenShake { 0% { transform: translate(0,0); } 25% { transform: translate(2px, -2px); } }/* === THE VOID & PULSING TEXT === */
+#totem-overlay {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    inset: 0;
+    background: #000;
+    color: #fff;
+    z-index: 9999999;
+    text-align: center;
+}
+
+#totem-text {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    animation: breathPulse 4s infinite alternate ease-in-out;
+}
+
+@keyframes breathPulse {
+    0% { opacity: 0.3; transform: scale(1); text-shadow: 0 0 5px rgba(255, 255, 255, 0.2); }
+    100% { opacity: 1; transform: scale(1.05); text-shadow: 0 0 25px rgba(255, 255, 255, 0.9); }
+}
+
+.wake-up-btn {
+    background: transparent;
+    color: #0f0;
+    border: 1px solid #0f0;
+    padding: 10px 20px;
+    font-family: monospace;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+}
+
+.wake-up-btn:hover {
+    background: #0f0;
+    color: #000;
+    box-shadow: 0 0 15px #0f0;
+}
     </style>
 </head>
 <body>
@@ -447,7 +488,7 @@ function triggerTotem() {
     // 2. Wait for the screen to be completely "sucked in" before showing the text
     setTimeout(() => {
         document.body.style.background = "#000"; // Turn the void black
-        document.getElementById('desktop-wrapper').style.display = "none";
+        document.getElementById('desktop').style.display = "none";
         document.getElementById('taskbar').style.display = "none";
         document.body.classList.remove('inception-dream'); // Reset zoom so text is readable
         
