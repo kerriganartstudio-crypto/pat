@@ -81,19 +81,14 @@
 @keyframes crt-flicker { 0% { opacity: 0.98; } 50% { opacity: 1; } 100% { opacity: 0.99; } }
 </style>
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-@keyframes crt-flicker {
-    0% { opacity: 0.98; }
-    50% { opacity: 1; }
-    100% { opacity: 0.99; }
-}
-</style>
-@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 </style>
     <div id="boot-screen">
         <div class="ascii-marine"> o/ \n/| ===--- \n/ \ </div>
         <p>KERRIGAN STUDIO OS [Version 4.1.36]</p>
-        <p>SYSTEM: Patrick Kerrigan | USMC 06-10</p>
-        <p>STATUS: INITIALIZING SYSTEM...</p>
+        <p>SYSTEM: USER: KERRIGAN STUDIO AUTHORIZED | 
+            OIF| OEF| USMC 06-10</p>
+        <p>STATUS: INITIALIZING SYSTEM.....
+        <P> Darkside...</P></p>
     </div>
     
     <div id="totem-overlay">
@@ -236,14 +231,14 @@
         </div>
     </div>
 
-    <script>
-// --- MATRIX CODE RAIN ---
+   <script>
+// --- 1. MATRIX CODE RAIN ---
 const canvas = document.getElementById('matrix-canvas');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$+-*/=%\"'#&_(),.;:?!\\|{}<>[]^~";
+const chars = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ$+-*/=%\"'#&_(),.;:?!\\|{}<>[]^~";
 const fontSize = 16;
 const columns = canvas.width / fontSize;
 const drops = Array(Math.floor(columns)).fill(1);
@@ -262,7 +257,10 @@ function drawRain() {
 }
 const rainInterval = setInterval(drawRain, 33);
 
-// --- MATRIX CONVERSATION LOGIC ---
+// --- 2. CONVERSATION LOGIC ---
+// Change your local file name here if it's not glitch.mp3
+const glitchSound = new Audio("glitch.mp3"); 
+
 const introText = [
     "Wake up...",
     "Kerrigan Studio has you...",
@@ -279,22 +277,39 @@ function typeWriter() {
         if (charIndex < introText[lineIndex].length) {
             textElement.innerHTML += introText[lineIndex].charAt(charIndex);
             charIndex++;
-            setTimeout(typeWriter, 30); // Fast typing
+            setTimeout(typeWriter, 25); // Fast typing speed
         } else {
             setTimeout(() => {
                 textElement.innerHTML = "";
                 charIndex = 0;
                 lineIndex++;
                 typeWriter();
-            }, 1000); // 1s pause between lines
+            }, 800); // Pause between lines
         }
     } else {
-        // THE REVEAL: Fade out everything
+        // --- 3. THE REVEAL (The Glitch) ---
+        glitchSound.play().catch(e => console.log("Sound ready after first click."));
         clearInterval(rainInterval);
-        introContainer.style.transition = "opacity 0.8s ease";
+        introContainer.style.transition = "opacity 0.5s ease, filter 0.5s ease";
+        introContainer.style.filter = "invert(1) hue-rotate(90deg) blur(5px)"; 
         introContainer.style.opacity = "0";
-        setTimeout(() => { introContainer.style.display = "none"; }, 800);
+        setTimeout(() => { introContainer.style.display = "none"; }, 500);
     }
 }
 
-window.onload = typeWriter;
+// This "DOMContentLoaded" is safer than window.onload - it prevents getting stuck!
+document.addEventListener('DOMContentLoaded', () => {
+    typeWriter();
+});
+
+// --- EXISTING WINDOW LOGIC ---
+function openWin(id, title) {
+    const win = document.getElementById(id);
+    if(win) win.style.display = 'block';
+}
+
+function closeWin(id) {
+    const win = document.getElementById(id);
+    if(win) win.style.display = 'none';
+}
+</script>
