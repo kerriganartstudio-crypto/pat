@@ -313,33 +313,69 @@ function triggerTotem() {
             }, 500);
         }
 
-        // --- PAINT APP LOGIC ---
-        const canvas = document.getElementById('p-canvas'); 
-        const ctx = canvas.getContext('2d'); 
-        let painting = false;
-        
-        ctx.fillStyle = "white"; ctx.fillRect(0,0, canvas.width, canvas.height);
-        
-        function startPosition(e) { painting = true; draw(e); }
-        function endPosition() { painting = false; ctx.beginPath(); }
-        function draw(e) {
-            if(!painting) return; 
-            const r = canvas.getBoundingClientRect();
-            ctx.lineWidth = document.getElementById('p-size').value; 
-            ctx.lineCap = 'round'; 
-            ctx.strokeStyle = document.getElementById('p-color').value;
-            ctx.lineTo(e.clientX - r.left, e.clientY - r.top); 
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(e.clientX - r.left, e.clientY - r.top);
-        }
-        
-        canvas.addEventListener('mousedown', startPosition);
-        canvas.addEventListener('mouseup', endPosition);
-        canvas.addEventListener('mousemove', draw);
-        
-        function clearPaint() { ctx.fillStyle = "white"; ctx.fillRect(0,0, canvas.width, canvas.height); }
-        function savePaint() { const a=document.createElement('a'); a.href=canvas.toDataURL(); a.download='kerrigan_art.png'; a.click(); }
+// --- PAINT APP LOGIC ---
+const canvas = document.getElementById('p-canvas');
+const ctx = canvas.getContext('2d');
+let painting = false;
+ctx.fillStyle = "white";
+ctx.fillRect(0,0, canvas.width, canvas.height);
+
+// Get exact coordinates for both mouse and touch
+function getCoordinates(e) {
+    const r = canvas.getBoundingClientRect();
+    if (e.touches && e.touches.length > 0) {
+        return { x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top };
+    }
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+}
+
+function startPosition(e) {
+    painting = true;
+    draw(e);
+}
+
+function endPosition() {
+    painting = false;
+    ctx.beginPath();
+}
+
+function draw(e) {
+    if(!painting) return;
+    e.preventDefault(); // Prevents the whole web page from scrolling on mobile while you draw
+    
+    const coords = getCoordinates(e);
+    ctx.lineWidth = document.getElementById('p-size').value;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = document.getElementById('p-color').value;
+    
+    ctx.lineTo(coords.x, coords.y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(coords.x, coords.y);
+}
+
+// Mouse Events (for Desktop)
+canvas.addEventListener('mousedown', startPosition);
+canvas.addEventListener('mouseup', endPosition);
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mouseout', endPosition); // Stops drawing if the mouse leaves the canvas
+
+// Touch Events (for Mobile)
+canvas.addEventListener('touchstart', startPosition, { passive: false });
+canvas.addEventListener('touchend', endPosition);
+canvas.addEventListener('touchmove', draw, { passive: false });
+
+function clearPaint() {
+    ctx.fillStyle = "white";
+    ctx.fillRect(0,0, canvas.width, canvas.height);
+}
+
+function savePaint() {
+    const a = document.createElement('a');
+    a.href = canvas.toDataURL();
+    a.download = 'kerrigan_art.png';
+    a.click();
+}
 
         // --- GAMEBOY EMULATOR LOGIC ---
         let activeRom = localStorage.getItem('k_rom_v36') || 'legendofZeldaTheOracle.gbc';
