@@ -247,51 +247,30 @@
             <button onclick="window.open('https://www.youtube.com/@kerriganstudio', '_blank')" style="background: #e0645c; color: white; border: 1px solid #fff; padding: 5px 15px; cursor: pointer; font-weight: bold;">Open Kerrigan Channel</button>
         </div>
     </div>
-    <div class="os-window" id="gallery-window" style="top:15%; left:30%; width:400px;">
-        <div class="window-header"><span>Artwork Archive</span><button class="close-btn" onclick="closeWin('gallery-window')">X</button></div>
-        <div class="window-content" style="background:#fff; text-align:center;">
-            <h4>Accessing the Vault | Kerrigan Studio | catalog of selected works &g graphic files.....
-            Raw visual data & project files...</h4>
-            <div style="background:#ccc; height:150px; display:flex; align-items:center; justify-content:center; margin-bottom:10px; border:1px solid #000;">
-               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; height: 350px; overflow-y: scroll; border: 2px inset #fff; background: #808080;">
-    
-    <div style="grid-column: span 2;">
-       <video controls style="width: 100%; border: 1px solid #000;">
-    <source src="mcr.m4a" type="video/mp4">
-</video>
-        <p style="font-size: 10px; color: #fff; text-align: center;">Kerrigan Studio - Art 1</p>
-    </div>
-
-    <img src="art2.jpg" style="width: 100%; border: 1px solid #000;">
-    <img src="art3.jpg" style="width: 100%; border: 1px solid #000;">
-    <img src="art4.jpg" style="width: 100%; border: 1px solid #000;">
-    <img src="art5.jpg" style="width: 100%; border: 1px solid #000;">
-    <img src="art6.jpg" style="width: 100%; border: 1px solid #000;">
-    <img src="art7.jpg" style="width: 100%; border: 1px solid #000;">
-    <img src="art8.jpg" style="width: 100%; border: 1px solid #000;">
-</div>
+<div class="os-window" id="gallery-window" style="top:15%; left:30%; width:400px;">
+    <div class="window-header"><span>Artwork Archive</span><button class="close-btn" onclick="closeWin('gallery-window')">X</button></div>
+    <div class="window-content" style="background:#fff; text-align:center;">
+        <h4>Kerrigan Studio Portfolio</h4>
+        <div style="background:#ccc; padding: 10px; border:1px solid #000;">
+            <video id="art-video" controls style="width: 100%; border: 1px solid #000; display:block;">
+                <source src="art1.mp4" type="video/mp4">
+            </video>
+            <img id="art-image" src="art2.jpg" style="width: 100%; height: 250px; object-fit: contain; border: 1px solid #000; display:none;">
+            <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 5px; border: 1px inset #fff;">
+                <button onclick="prevArt()" style="font-weight:bold; cursor:pointer;">&lt; PREV</button>
+                <span id="art-counter" style="font-weight:bold;">1 / 8</span>
+                <button onclick="nextArt()" style="font-weight:bold; cursor:pointer;">NEXT &gt;</button>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="os-window" id="tischlers-window" style="top:10%; left:40%; width:300px;">
-        <div class="window-header"><span>Tischlers Uptown Market</span><button class="close-btn" onclick="closeWin('tischlers-window')">X</button></div>
-      <div class="window-content" style="background:#fff; text-align:center;">
-    <h4>Kerrigan Studio Portfolio</h4>
-    <div style="background:#ccc; padding: 10px; border:1px solid #000;">
-        
-        <video id="art-video" controls style="width: 100%; border: 1px solid #000; display:block;">
-            <source src="art1.mp4" type="video/mp4">
-        </video>
-        
-        <img id="art-image" src="art2.jpg" style="width: 100%; height: 250px; object-fit: contain; border: 1px solid #000; display:none;">
-
-        <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 5px; border: 1px inset #fff;">
-            <button onclick="prevArt()" style="font-weight:bold; cursor:pointer;">&lt; PREV</button>
-            <span id="art-counter" style="font-weight:bold;">1 / 8</span>
-            <button onclick="nextArt()" style="font-weight:bold; cursor:pointer;">NEXT &gt;</button>
-        </div>
-
+<div class="os-window" id="tischlers-window" style="top:10%; left:40%; width:300px;">
+    <div class="window-header"><span>Tischlers Uptown Market</span><button class="close-btn" onclick="closeWin('tischlers-window')">X</button></div>
+    <div class="window-content" style="background:#fff; text-align:center;">
+        <br>
+        <h4>Tischlers Uptown Market</h4>
+        <p><em>Digital storefront coming soon...</em></p>
     </div>
 </div>
 <script>
