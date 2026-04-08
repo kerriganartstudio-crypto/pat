@@ -70,12 +70,16 @@
     </style>
 </head>
 <body>
-<div id="matrix-intro" style="position:fixed; inset:0; background:#000; color:#0f0; font-family:monospace; z-index:3000000; display:flex; flex-direction:column; justify-content:center; padding:40px; font-size:24px; line-height:1.5; text-shadow: 0 0 8px rgba(0,255,0,0.9);">
-    <div id="matrix-text" style="animation: crt-flicker 0.15s infinite;"></div>
-    <span id="cursor" style="width:12px; height:24px; background:#0f0; display:inline-block; animation: blink 0.8s infinite; box-shadow: 0 0 10px #0f0;"></span>
+<div id="matrix-intro" style="position:fixed; inset:0; background:#000; color:#0f0; font-family:monospace; z-index:3000000; display:flex; flex-direction:column; justify-content:center; padding:40px; font-size:24px; line-height:1.5; text-shadow: 0 0 8px rgba(0,255,0,0.9); overflow:hidden;">
+    <canvas id="matrix-canvas" style="position:absolute; inset:0; z-index:-1; opacity:0.3;"></canvas>
+    <div id="matrix-text" style="position:relative; z-index:1; animation: crt-flicker 0.15s infinite;"></div>
+    <span id="cursor" style="position:relative; z-index:1; width:12px; height:24px; background:#0f0; display:inline-block; animation: blink 0.8s infinite; box-shadow: 0 0 10px #0f0;"></span>
 </div>
 
 <style>
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes crt-flicker { 0% { opacity: 0.98; } 50% { opacity: 1; } 100% { opacity: 0.99; } }
+</style>
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 @keyframes crt-flicker {
     0% { opacity: 0.98; }
@@ -233,6 +237,31 @@
     </div>
 
     <script>
+// --- MATRIX CODE RAIN ---
+const canvas = document.getElementById('matrix-canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$+-*/=%\"'#&_(),.;:?!\\|{}<>[]^~";
+const fontSize = 16;
+const columns = canvas.width / fontSize;
+const drops = Array(Math.floor(columns)).fill(1);
+
+function drawRain() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#0F0";
+    ctx.font = fontSize + "px monospace";
+    for (let i = 0; i < drops.length; i++) {
+        const text = chars.charAt(Math.floor(Math.random() * chars.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+    }
+}
+const rainInterval = setInterval(drawRain, 33);
+
 // --- MATRIX CONVERSATION LOGIC ---
 const introText = [
     "Wake up...",
@@ -241,8 +270,7 @@ const introText = [
     "Knock, knock."
 ];
 
-let lineIndex = 0;
-let charIndex = 0;
+let lineIndex = 0, charIndex = 0;
 const textElement = document.getElementById('matrix-text');
 const introContainer = document.getElementById('matrix-intro');
 
@@ -251,26 +279,22 @@ function typeWriter() {
         if (charIndex < introText[lineIndex].length) {
             textElement.innerHTML += introText[lineIndex].charAt(charIndex);
             charIndex++;
-            // PART 2: High-speed typing (30ms per character)
-            setTimeout(typeWriter, 30); 
+            setTimeout(typeWriter, 30); // Fast typing
         } else {
-            // PART 3: Faster transition between lines (1 second pause)
             setTimeout(() => {
                 textElement.innerHTML = "";
                 charIndex = 0;
                 lineIndex++;
                 typeWriter();
-            }, 1000);
+            }, 1000); // 1s pause between lines
         }
     } else {
-        // THE REVEAL: Screen glitches out to reveal your desktop
-        introContainer.style.transition = "opacity 0.5s ease";
+        // THE REVEAL: Fade out everything
+        clearInterval(rainInterval);
+        introContainer.style.transition = "opacity 0.8s ease";
         introContainer.style.opacity = "0";
-        setTimeout(() => {
-            introContainer.style.display = "none";
-        }, 500);
+        setTimeout(() => { introContainer.style.display = "none"; }, 800);
     }
 }
 
-// Start the sequence as soon as the window loads
 window.onload = typeWriter;
