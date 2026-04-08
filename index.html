@@ -244,7 +244,7 @@
             document.addEventListener('mouseup', () => { isDragging = false; });
         });
 
-  // --- INCEPTION TOTEM 4TH WALL BREAK (CINEMATIC) ---
+// --- INCEPTION TOTEM 4TH WALL BREAK (CINEMATIC 2001 UPGRADE) ---
 function triggerTotem() {
     // 1. Blackout the OS completely
     document.body.style.background = "#000";
@@ -252,7 +252,7 @@ function triggerTotem() {
     document.getElementById("taskbar").style.display = "none";
 
     // 2. Inject the Matrix Canvas
-    document.body.insertAdjacentHTML('beforeend', '<canvas id="stargateCanvas" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999999;"></canvas>');
+    document.body.insertAdjacentHTML('beforeend', '<canvas id="stargateCanvas" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999999;transform-origin:center bottom;"></canvas>');
     const c = document.getElementById("stargateCanvas");
     const ctx = c.getContext("2d");
     c.width = window.innerWidth;
@@ -278,25 +278,25 @@ function triggerTotem() {
         }
     }, 33);
 
-    // 3. Stargate Warp! (Triggers after 4 seconds)
+    // 3. Stargate Warp! (The 2001 Slit-Scan Upgrade)
     setTimeout(() => {
-        // Stretches, spins, and cycles colors to simulate hitting a wormhole
-        c.style.transition = "transform 4s cubic-bezier(0.5, 0, 0.1, 1), filter 4s linear";
-        c.style.transform = "scale(60) rotate(25deg)";
-        c.style.filter = "hue-rotate(720deg) contrast(400%) blur(2px)";
+        // Uses 3D perspective to bend the code into a rushing light tunnel
+        c.style.transition = "transform 6s ease-in, filter 6s linear";
+        c.style.transform = "perspective(300px) rotateX(80deg) scaleY(50) scaleX(10) translateY(-1000px)";
+        c.style.filter = "hue-rotate(1440deg) contrast(600%) brightness(300%) blur(3px) saturate(400%)";
     }, 4000);
 
-    // 4. Fade into the Void & Reveal Text
+    // 4. Fade into the Void (Extended duration for the 2001 warp)
     setTimeout(() => {
         clearInterval(matrix);
-        c.style.transition = "opacity 2s ease";
+        c.style.transition = "opacity 3s ease-out";
         c.style.opacity = "0";
         setTimeout(() => {
             document.getElementById("totem-overlay").style.display = "flex";
             document.getElementById("totem-overlay").style.zIndex = "99999999";
             c.remove(); // Clean up the canvas
-        }, 2000);
-    }, 8000);
+        }, 3000);
+    }, 10000); // Waits 10 seconds total before fading to the text
 }
         // --- SYSTEM FAILURE (T-REX) ---
         function triggerSystemFailure() {
