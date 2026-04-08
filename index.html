@@ -244,7 +244,7 @@
             document.addEventListener('mouseup', () => { isDragging = false; });
         });
 
-// --- INCEPTION TOTEM 4TH WALL BREAK (CINEMATIC 2001 UPGRADE) ---
+// --- INCEPTION TOTEM 4TH WALL BREAK (SMOOTH VERTICAL WARP) ---
 function triggerTotem() {
     // 1. Blackout the OS completely
     document.body.style.background = "#000";
@@ -252,7 +252,7 @@ function triggerTotem() {
     document.getElementById("taskbar").style.display = "none";
 
     // 2. Inject the Matrix Canvas
-    document.body.insertAdjacentHTML('beforeend', '<canvas id="stargateCanvas" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999999;transform-origin:center bottom;"></canvas>');
+    document.body.insertAdjacentHTML('beforeend', '<canvas id="stargateCanvas" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999999;transform-origin:center center;"></canvas>');
     const c = document.getElementById("stargateCanvas");
     const ctx = c.getContext("2d");
     c.width = window.innerWidth;
@@ -278,15 +278,15 @@ function triggerTotem() {
         }
     }, 33);
 
-    // 3. Stargate Warp! (The 2001 Slit-Scan Upgrade)
+    // 3. Stargate Warp! (Smooth Vertical Lightspeed)
     setTimeout(() => {
-        // Uses 3D perspective to bend the code into a rushing light tunnel
-        c.style.transition = "transform 6s ease-in, filter 6s linear";
-        c.style.transform = "perspective(300px) rotateX(80deg) scaleY(50) scaleX(10) translateY(-1000px)";
-        c.style.filter = "hue-rotate(1440deg) contrast(600%) brightness(300%) blur(3px) saturate(400%)";
+        // Massively stretches the code vertically and scales it up to fly past the camera
+        c.style.transition = "transform 5s cubic-bezier(0.5, 0, 0.1, 1), filter 5s linear";
+        c.style.transform = "scaleY(120) scaleX(4)"; // <--- This creates the vertical light streaks!
+        c.style.filter = "hue-rotate(1440deg) contrast(500%) brightness(300%) blur(2px) saturate(400%)";
     }, 4000);
 
-    // 4. Fade into the Void (Extended duration for the 2001 warp)
+    // 4. Fade into the Void 
     setTimeout(() => {
         clearInterval(matrix);
         c.style.transition = "opacity 3s ease-out";
@@ -296,7 +296,7 @@ function triggerTotem() {
             document.getElementById("totem-overlay").style.zIndex = "99999999";
             c.remove(); // Clean up the canvas
         }, 3000);
-    }, 10000); // Waits 10 seconds total before fading to the text
+    }, 9000); 
 }
         // --- SYSTEM FAILURE (T-REX) ---
         function triggerSystemFailure() {
