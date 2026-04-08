@@ -17,30 +17,56 @@
             height: 100vh; width: 100vw;
         }
         
-        #crt-overlay { 
-            position: fixed; inset: 0; z-index: 999999; pointer-events: none; 
-            background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.1) 50%), radial-gradient(rgba(255,255,255,0.05), transparent);
-            background-size: 100% 100%, 100% 4px; opacity: 0.6; 
-        }
+/* === CRT DOME GLASS MONITOR EFFECT === */
+#crt-overlay {
+    position: fixed; 
+    inset: 0; 
+    z-index: 999999; 
+    pointer-events: none; 
+    /* Scanlines */
+    background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.25) 50%); 
+    background-size: 100% 4px; 
+    /* Vignette for the deep curved glass feel */
+    box-shadow: inset 0 0 150px rgba(0,0,0,0.9), inset 0 0 50px rgba(0,0,0,0.7);
+    border-radius: 20px;
+}
+
+/* Top Glass Glare Reflection */
+#crt-overlay::after {
+    content: "";
+    position: absolute;
+    top: -5%;
+    left: 0;
+    right: 0;
+    height: 35%;
+    background: radial-gradient(ellipse at center, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 60%);
+    border-radius: 50% 50% 0 0;
+    pointer-events: none;
+}
         /* === BOOT & SCREENS === */
         #boot-screen, #shutdown-screen { position: fixed; inset: 0; background: #000; color: #c0c0c0; font-family: monospace; z-index: 2000000; padding: 40px; }
         #shutdown-screen { display: none; justify-content: center; align-items: center; text-align: center; color: #f90; font-size: 24px; }
         .ascii-marine { color: #3f0; white-space: pre; font-weight: bold; margin: 20px 0; }
 
-/* === TRUE 2001 SLIT-SCAN TUNNEL (1:13 Mark) === */
+/* === 3D HYPER-WARP: HEAD-THROWN-BACK EDITION === */
 body.inception-dream {
-    overflow: hidden;
+    overflow: hidden; 
     background: #000;
+    /* This creates the 3D depth camera */
+    perspective: 500px; 
+    transform-style: preserve-3d;
 }
 
 body.inception-dream #desktop {
     opacity: 0; 
 }
 
+/* We use two layers of light walls flying past you */
+.inception-dream::before,
 .inception-dream::after {
     content: "";
     position: fixed;
-    inset: -200%; 
+    inset: -200%;
     z-index: 9999998;
     background: repeating-conic-gradient(
         from 0deg,
@@ -53,13 +79,29 @@ body.inception-dream #desktop {
         #000 23deg 30deg
     );
     opacity: 0;
-    animation: stargateRays 3.4s ease-in forwards;
+    /* Violent acceleration curve */
+    animation: warpSpeed3D 3.4s cubic-bezier(0.7, 0, 0.1, 1) forwards;
 }
 
-@keyframes stargateRays {
-    0% { opacity: 0; transform: scale(0.01) rotate(0deg); filter: brightness(1) hue-rotate(0deg); }
-    10% { opacity: 1; filter: brightness(2); }
-    100% { opacity: 1; transform: scale(15) rotate(90deg); filter: brightness(5) hue-rotate(720deg); }
+/* The second layer follows slightly behind with different colors for chaos */
+.inception-dream::after {
+    animation-delay: 0.15s;
+    background: repeating-conic-gradient(
+        from 45deg,
+        #000 0deg 3deg,
+        #0f0 3deg 4deg,
+        #000 4deg 15deg,
+        #fff 15deg 16deg,
+        #000 16deg 30deg
+    );
+}
+
+@keyframes warpSpeed3D {
+    /* Starts 2000px away in the distance */
+    0% { opacity: 0; transform: translateZ(-2000px) rotate(0deg); filter: brightness(1) hue-rotate(0deg); }
+    15% { opacity: 1; filter: brightness(1.5); }
+    /* Flies past the 500px camera to Z=1000px (physically going over your head) */
+    100% { opacity: 1; transform: translateZ(1000px) rotate(180deg); filter: brightness(5) hue-rotate(360deg); }
 }
 /* === WINDOWS 98 CURSORS === */
 body, html, .os-window, .window-content { 
