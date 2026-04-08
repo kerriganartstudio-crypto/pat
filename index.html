@@ -247,7 +247,7 @@
     </div>
 </div>
 <script>
-// --- 1. MATRIX CODE RAIN ---
+// --- 1. MATRIX INTRO & CODE RAIN ---
 const canvas = document.getElementById('matrix-canvas');
 const ctx = canvas.getContext('2d');
 if (canvas) {
@@ -272,12 +272,11 @@ if (canvas) {
     var rainInterval = setInterval(drawRain, 33);
 }
 
-// --- 2. CONVERSATION LOGIC ---
 const introText = ["Knock Knock...Wake up...", "Kerrigan Studio has you...", "Follow the EYE"];
 let lineIndex = 0, charIndex = 0;
 const textElement = document.getElementById('matrix-text');
 const introContainer = document.getElementById('matrix-intro');
-const bootScreen = document.getElementById('boot-screen'); // Access the boot screen
+const bootScreen = document.getElementById('boot-screen'); 
 
 function typeWriter() {
     if (lineIndex < introText.length) {
@@ -294,31 +293,159 @@ function typeWriter() {
             }, 1000); 
         }
     } else {
-        // --- 3. THE REVEAL: Hides BOTH Intro and Boot Screen ---
         clearInterval(rainInterval);
         introContainer.style.transition = "opacity 0.8s ease";
         bootScreen.style.transition = "opacity 0.8s ease";
-        
         introContainer.style.opacity = "0";
         bootScreen.style.opacity = "0";
-        
         setTimeout(() => { 
             introContainer.style.display = "none"; 
             bootScreen.style.display = "none";
         }, 800);
     }
 }
-
 document.addEventListener('DOMContentLoaded', typeWriter);
 
-// --- WINDOW CONTROLS ---
+// --- 2. WINDOW CONTROLS (Drag & Z-Index) ---
+let highestZ = 100;
+function bringToFront(win) {
+    highestZ++;
+    win.style.zIndex = highestZ;
+}
 function openWin(id, title) {
     const win = document.getElementById(id);
-    if(win) win.style.display = 'block';
+    if(win) {
+        win.style.display = 'block';
+        bringToFront(win);
+    }
 }
 function closeWin(id) {
     const win = document.getElementById(id);
     if(win) win.style.display = 'none';
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Make windows draggable and clickable to bring to front
+    document.querySelectorAll('.os-window').forEach(win => {
+        win.addEventListener('mousedown', () => bringToFront(win));
+        const header = win.querySelector('.window-header');
+        if(!header) return;
+        let isDragging = false, offsetX, offsetY;
+        header.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            offsetX = e.clientX - win.getBoundingClientRect().left;
+            offsetY = e.clientY - win.getBoundingClientRect().top;
+        });
+        document.addEventListener('mousemove', (e) => {
+            if(isDragging) {
+                win.style.left = (e.clientX - offsetX) + 'px';
+                win.style.top = (e.clientY - offsetY) + 'px';
+            }
+        });
+        document.addEventListener('mouseup', () => { isDragging = false; });
+    });
+
+    // --- 3. PAINT APP LOGIC ---
+    const pCanvas = document.getElementById('p-canvas');
+    if(pCanvas) {
+        const pCtx = pCanvas.getContext('2d');
+        let isDrawing = false;
+        pCtx.fillStyle = "white";
+        pCtx.fillRect(0,0, pCanvas.width, pCanvas.height);
+
+        function startDraw(e) { isDrawing = true; draw(e); }
+        function stopDraw() { isDrawing = false; pCtx.beginPath(); }
+        function draw(e) {
+            if(!isDrawing) return;
+            const rect = pCanvas.getBoundingClientRect();
+            // Handle both mouse and mobile touch
+            const x = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+            const y = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
+
+            pCtx.lineWidth = document.getElementById('p-size').value;
+            pCtx.lineCap = "round";
+            pCtx.strokeStyle = document.getElementById('p-color').value;
+
+            pCtx.lineTo(x, y);
+            pCtx.stroke();
+            pCtx.beginPath();
+            pCtx.moveTo(x, y);
+        }
+        pCanvas.addEventListener('mousedown', startDraw);
+        pCanvas.addEventListener('mouseup', stopDraw);
+        pCanvas.addEventListener('mousemove', draw);
+        pCanvas.addEventListener('touchstart', startDraw);
+        pCanvas.addEventListener('touchend', stopDraw);
+        pCanvas.addEventListener('touchmove', e => { e.preventDefault(); draw(e); }, {passive: false});
+
+        window.clearPaint = function() {
+            pCtx.fillStyle = "white";
+            pCtx.fillRect(0,0, pCanvas.width, pCanvas.height);
+        }
+        window.savePaint = function() {
+            const link = document.createElement('a');
+            link.download = 'kerrigan-art.png';
+            link.href = pCanvas.toDataURL();
+            link.click();
+        }
+    }
+});
+
+// --- 4. ARTWORK CAROUSEL LOGIC ---
+const artFiles = [
+    {type: 'video', src: 'art1.mp4'},
+    {type: 'image', src: 'art2.jpg'},
+    {type: 'image', src: 'art3.jpg'},
+    {type: 'image', src: 'art4.jpg'},
+    {type: 'image', src: 'art5.jpg'},
+    {type: 'image', src: 'art6.jpg'},
+    {type: 'image', src: 'art7.jpg'},
+    {type: 'image', src: 'art8.jpg'}
+];
+let artIndex = 0;
+function prevArt() {
+    artIndex = (artIndex > 0) ? artIndex - 1 : artFiles.length - 1;
+    updateArt();
+}
+function nextArt() {
+    artIndex = (artIndex < artFiles.length - 1) ? artIndex + 1 : 0;
+    updateArt();
+}
+function updateArt() {
+    const vid = document.getElementById('art-video');
+    const img = document.getElementById('art-image');
+    const counter = document.getElementById('art-counter');
+    const current = artFiles[artIndex];
+
+    if(current.type === 'video') {
+        img.style.display = 'none';
+        vid.style.display = 'block';
+        vid.src = current.src;
+        vid.play().catch(e=>{});
+    } else {
+        vid.pause();
+        vid.style.display = 'none';
+        img.style.display = 'block';
+        img.src = current.src;
+    }
+    counter.innerText = (artIndex + 1) + " / " + artFiles.length;
+}
+
+// --- 5. SYSTEM APPS (Totem & Crash) ---
+function triggerTotem() {
+    document.getElementById('totem-overlay').style.display = 'flex';
+}
+function triggerSystemFailure() {
+    const crash = document.getElementById('crashOverlay');
+    const dino = document.getElementById('dinoVideo');
+    if(crash && dino) {
+        crash.style.display = 'block';
+        document.body.classList.add('system-failure');
+        dino.play();
+        setTimeout(() => {
+            document.body.classList.remove('system-failure');
+            crash.style.display = 'none';
+        }, 5000); // Glitch ends after 5 seconds
+    }
+}
 </script>
- 
