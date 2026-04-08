@@ -27,17 +27,27 @@
         #shutdown-screen { display: none; justify-content: center; align-items: center; text-align: center; color: #f90; font-size: 24px; }
         .ascii-marine { color: #3f0; white-space: pre; font-weight: bold; margin: 20px 0; }
 
-       /* === EPIC INCEPTION / 2001 STARGATE EFFECT === */
+/* === EPIC STARGATE / WARP DRIVE / MATRIX EFFECT === */
 .inception-dream {
-    animation: stargateWarp 3.5s ease-in forwards;
+    animation: hyperWarp 3.4s cubic-bezier(0.5, 0, 0.1, 1) forwards;
+    transform-origin: center center;
 }
 
-@keyframes stargateWarp {
-    0% { transform: scale(1) rotate(0deg); filter: hue-rotate(0deg) blur(0px); }
-    25% { transform: scale(1.5) rotate(2deg); filter: invert(1) hue-rotate(90deg) blur(2px) contrast(1.5); }
-    50% { transform: scale(3) rotate(-3deg); filter: invert(0) hue-rotate(180deg) blur(4px) contrast(2); }
-    75% { transform: scale(8) rotate(5deg); filter: invert(1) hue-rotate(270deg) blur(8px) contrast(3); }
-    100% { transform: scale(30) rotate(15deg); filter: invert(1) hue-rotate(360deg) blur(12px) contrast(5) brightness(0); }
+@keyframes hyperWarp {
+    0% { transform: scale(1) rotate(0deg); filter: hue-rotate(0deg); }
+    20% { transform: scale(1.5) rotate(-5deg) skewX(5deg); filter: invert(1) hue-rotate(90deg) contrast(1.5); }
+    40% { transform: scale(3) rotate(15deg) skewX(-10deg); filter: saturate(5) hue-rotate(180deg) blur(2px); box-shadow: inset 0 0 100px #0f0; }
+    60% { transform: scale(8) rotate(-30deg) skewX(20deg); filter: invert(1) hue-rotate(270deg) blur(4px) contrast(4); }
+    80% { transform: scale(25) rotate(90deg); filter: sepia(1) hue-rotate(100deg) saturate(10) blur(8px); background-color: #0f0; }
+    100% { transform: scale(80) rotate(180deg); filter: brightness(0); }
+}
+
+/* === WINDOWS 98 CURSORS === */
+body, html, .os-window, .window-content { 
+    cursor: url('https://win98icons.alexmeub.com/cursors/arrow.cur'), auto !important; 
+}
+button, .desktop-icon, .task-tab, .close-btn, a, #card-inner { 
+    cursor: url('https://win98icons.alexmeub.com/cursors/pointer.cur'), pointer !important; 
 }
 
         /* === DESKTOP ICONS === */
