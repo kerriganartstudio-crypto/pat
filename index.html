@@ -232,6 +232,7 @@
     </div>
 
    <script>
+<script>
 // --- 1. MATRIX CODE RAIN ---
 const canvas = document.getElementById('matrix-canvas');
 const ctx = canvas.getContext('2d');
@@ -258,9 +259,6 @@ function drawRain() {
 const rainInterval = setInterval(drawRain, 33);
 
 // --- 2. CONVERSATION LOGIC ---
-// Change your local file name here if it's not glitch.mp3
-const glitchSound = new Audio("glitch.mp3"); 
-
 const introText = [
     "Wake up...",
     "Kerrigan Studio has you...",
@@ -277,37 +275,34 @@ function typeWriter() {
         if (charIndex < introText[lineIndex].length) {
             textElement.innerHTML += introText[lineIndex].charAt(charIndex);
             charIndex++;
-            setTimeout(typeWriter, 25); // Fast typing speed
+            setTimeout(typeWriter, 30); // High-speed typing
         } else {
             setTimeout(() => {
                 textElement.innerHTML = "";
                 charIndex = 0;
                 lineIndex++;
                 typeWriter();
-            }, 800); // Pause between lines
+            }, 1000); // 1s pause between lines
         }
     } else {
-        // --- 3. THE REVEAL (The Glitch) ---
-        glitchSound.play().catch(e => console.log("Sound ready after first click."));
+        // --- 3. THE REVEAL ---
         clearInterval(rainInterval);
-        introContainer.style.transition = "opacity 0.5s ease, filter 0.5s ease";
-        introContainer.style.filter = "invert(1) hue-rotate(90deg) blur(5px)"; 
+        introContainer.style.transition = "opacity 0.8s ease";
         introContainer.style.opacity = "0";
-        setTimeout(() => { introContainer.style.display = "none"; }, 500);
+        setTimeout(() => { 
+            introContainer.style.display = "none"; 
+        }, 800);
     }
 }
 
-// This "DOMContentLoaded" is safer than window.onload - it prevents getting stuck!
-document.addEventListener('DOMContentLoaded', () => {
-    typeWriter();
-});
+// Starts the intro as soon as the page structure is ready
+document.addEventListener('DOMContentLoaded', typeWriter);
 
-// --- EXISTING WINDOW LOGIC ---
+// --- WINDOW CONTROLS ---
 function openWin(id, title) {
     const win = document.getElementById(id);
     if(win) win.style.display = 'block';
 }
-
 function closeWin(id) {
     const win = document.getElementById(id);
     if(win) win.style.display = 'none';
