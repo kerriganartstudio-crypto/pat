@@ -433,15 +433,21 @@ function updateArt() {
 
 // --- 5. SYSTEM APPS (Totem & Crash) ---
 function triggerTotem() {
+    // This triggers the screen blur and color inversion animation!
+    document.body.classList.add('inception-dream'); 
     document.getElementById('totem-overlay').style.display = 'flex';
 }
+
 function triggerSystemFailure() {
     const crash = document.getElementById('crashOverlay');
     const dino = document.getElementById('dinoVideo');
     if(crash && dino) {
         crash.style.display = 'block';
-        document.body.classList.add('system-failure');
-        dino.play();
+        document.body.classList.add('system-failure'); // Triggers the screen shake
+        
+        // This 'catch' prevents the browser from breaking if it blocks the video
+        dino.play().catch(e => console.log("Browser requires a click first.")); 
+        
         setTimeout(() => {
             document.body.classList.remove('system-failure');
             crash.style.display = 'none';
