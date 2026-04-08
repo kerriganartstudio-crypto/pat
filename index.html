@@ -244,7 +244,7 @@
             document.addEventListener('mouseup', () => { isDragging = false; });
         });
 
-// --- INCEPTION TOTEM 4TH WALL BREAK (SMOOTH VERTICAL WARP) ---
+// --- INCEPTION TOTEM 4TH WALL BREAK (STARGATE SG-1 VORTEX) ---
 function triggerTotem() {
     // 1. Blackout the OS completely
     document.body.style.background = "#000";
@@ -278,15 +278,15 @@ function triggerTotem() {
         }
     }, 33);
 
-    // 3. Stargate Warp! (Smooth Vertical Lightspeed)
+    // 3. Stargate Warp! (SG-1 Wormhole Vortex)
     setTimeout(() => {
-        // Massively stretches the code vertically and scales it up to fly past the camera
+        // Sucks the user into the center by spinning violently while zooming
         c.style.transition = "transform 5s cubic-bezier(0.5, 0, 0.1, 1), filter 5s linear";
-        c.style.transform = "scaleY(120) scaleX(4)"; // <--- This creates the vertical light streaks!
-        c.style.filter = "hue-rotate(1440deg) contrast(500%) brightness(300%) blur(2px) saturate(400%)";
+        c.style.transform = "scale(60) rotate(1080deg)"; // <--- The Wormhole Spin!
+        c.style.filter = "hue-rotate(1440deg) contrast(500%) brightness(300%) blur(3px) saturate(400%)";
     }, 4000);
 
-    // 4. Fade into the Void 
+    // 4. Fade into the Void
     setTimeout(() => {
         clearInterval(matrix);
         c.style.transition = "opacity 3s ease-out";
