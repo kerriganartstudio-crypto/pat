@@ -205,9 +205,9 @@
                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; height: 350px; overflow-y: scroll; border: 2px inset #fff; background: #808080;">
     
     <div style="grid-column: span 2;">
-        <video controls style="width: 100%; border: 1px solid #000;">
-            <source src="art1.mp4" type="video/mp4">
-        </video>
+       <video controls style="width: 100%; border: 1px solid #000;">
+    <source src="mcr.m4a" type="video/mp4">
+</video>
         <p style="font-size: 10px; color: #fff; text-align: center;">Kerrigan Studio - Art 1</p>
     </div>
 
@@ -230,72 +230,69 @@
             <button onclick="window.open('https://tischlerfinerfoods.com/')">Website</button>
         </div>
     </div>
-
-   <script>
 <script>
 // --- 1. MATRIX CODE RAIN ---
 const canvas = document.getElementById('matrix-canvas');
 const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-const chars = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ$+-*/=%\"'#&_(),.;:?!\\|{}<>[]^~";
-const fontSize = 16;
-const columns = canvas.width / fontSize;
-const drops = Array(Math.floor(columns)).fill(1);
-
-function drawRain() {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "#0F0";
-    ctx.font = fontSize + "px monospace";
-    for (let i = 0; i < drops.length; i++) {
-        const text = chars.charAt(Math.floor(Math.random() * chars.length));
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-        drops[i]++;
+if (canvas) {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const chars = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ$+-*/=%\"'#&_(),.;:?!\\|{}<>[]^~";
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(1);
+    function drawRain() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#0F0";
+        ctx.font = fontSize + "px monospace";
+        for (let i = 0; i < drops.length; i++) {
+            const text = chars.charAt(Math.floor(Math.random() * chars.length));
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+            drops[i]++;
+        }
     }
+    var rainInterval = setInterval(drawRain, 33);
 }
-const rainInterval = setInterval(drawRain, 33);
 
 // --- 2. CONVERSATION LOGIC ---
-const introText = [
-    "Wake up...",
-    "Kerrigan Studio has you...",
-    "Follow the white rabbit.",
-    "Knock, knock."
-];
-
+const introText = ["Wake up...", "Kerrigan Studio has you...", "Follow the white rabbit.", "Knock, knock."];
 let lineIndex = 0, charIndex = 0;
 const textElement = document.getElementById('matrix-text');
 const introContainer = document.getElementById('matrix-intro');
+const bootScreen = document.getElementById('boot-screen'); // Access the boot screen
 
 function typeWriter() {
     if (lineIndex < introText.length) {
         if (charIndex < introText[lineIndex].length) {
             textElement.innerHTML += introText[lineIndex].charAt(charIndex);
             charIndex++;
-            setTimeout(typeWriter, 30); // High-speed typing
+            setTimeout(typeWriter, 30); 
         } else {
             setTimeout(() => {
                 textElement.innerHTML = "";
                 charIndex = 0;
                 lineIndex++;
                 typeWriter();
-            }, 1000); // 1s pause between lines
+            }, 1000); 
         }
     } else {
-        // --- 3. THE REVEAL ---
+        // --- 3. THE REVEAL: Hides BOTH Intro and Boot Screen ---
         clearInterval(rainInterval);
         introContainer.style.transition = "opacity 0.8s ease";
+        bootScreen.style.transition = "opacity 0.8s ease";
+        
         introContainer.style.opacity = "0";
+        bootScreen.style.opacity = "0";
+        
         setTimeout(() => { 
             introContainer.style.display = "none"; 
+            bootScreen.style.display = "none";
         }, 800);
     }
 }
 
-// Starts the intro as soon as the page structure is ready
 document.addEventListener('DOMContentLoaded', typeWriter);
 
 // --- WINDOW CONTROLS ---
@@ -308,3 +305,4 @@ function closeWin(id) {
     if(win) win.style.display = 'none';
 }
 </script>
+ 
