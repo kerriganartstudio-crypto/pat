@@ -70,12 +70,19 @@
     </style>
 </head>
 <body>
-<div id="matrix-intro" style="position:fixed; inset:0; background:#000; color:#0f0; font-family:monospace; z-index:3000000; display:flex; flex-direction:column; justify-content:center; padding:40px; font-size:20px; line-height:1.5;">
-    <div id="matrix-text"></div>
-    <span id="cursor" style="width:10px; height:20px; background:#0f0; display:inline-block; animation: blink 0.8s infinite;"></span>
+<div id="matrix-intro" style="position:fixed; inset:0; background:#000; color:#0f0; font-family:monospace; z-index:3000000; display:flex; flex-direction:column; justify-content:center; padding:40px; font-size:24px; line-height:1.5; text-shadow: 0 0 8px rgba(0,255,0,0.9);">
+    <div id="matrix-text" style="animation: crt-flicker 0.15s infinite;"></div>
+    <span id="cursor" style="width:12px; height:24px; background:#0f0; display:inline-block; animation: blink 0.8s infinite; box-shadow: 0 0 10px #0f0;"></span>
 </div>
 
 <style>
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes crt-flicker {
+    0% { opacity: 0.98; }
+    50% { opacity: 1; }
+    100% { opacity: 0.99; }
+}
+</style>
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 </style>
     <div id="boot-screen">
@@ -226,9 +233,9 @@
     </div>
 
     <script>
-// --- MATRIX INTRO LOGIC ---
+// --- MATRIX CONVERSATION LOGIC ---
 const introText = [
-    "Wake up, Patrick...",
+    "Wake up...",
     "Kerrigan Studio has you...",
     "Follow the white rabbit.",
     "Knock, knock."
@@ -244,193 +251,26 @@ function typeWriter() {
         if (charIndex < introText[lineIndex].length) {
             textElement.innerHTML += introText[lineIndex].charAt(charIndex);
             charIndex++;
-            setTimeout(typeWriter, Math.random() * 150 + 50); // Natural typing speed
+            // PART 2: High-speed typing (30ms per character)
+            setTimeout(typeWriter, 30); 
         } else {
-            // End of line, wait then clear and start next line
+            // PART 3: Faster transition between lines (1 second pause)
             setTimeout(() => {
                 textElement.innerHTML = "";
                 charIndex = 0;
                 lineIndex++;
                 typeWriter();
-            }, 2000);
+            }, 1000);
         }
     } else {
-        // END OF CONVERSATION: Glitch into the OS
-        introContainer.style.transition = "opacity 1s ease";
+        // THE REVEAL: Screen glitches out to reveal your desktop
+        introContainer.style.transition = "opacity 0.5s ease";
         introContainer.style.opacity = "0";
         setTimeout(() => {
             introContainer.style.display = "none";
-            // Start your existing boot sequence here
-        }, 1000);
+        }, 500);
     }
 }
 
-// Start the intro when the page loads
+// Start the sequence as soon as the window loads
 window.onload = typeWriter;
-
-        // --- DRAGGABLE WINDOWS (FIXED) ---
-        document.querySelectorAll('.os-window').forEach(win => {
-            const header = win.querySelector('.window-header');
-            let isDragging = false, startX, startY, initialX, initialY;
-
-            // Click to bring to front
-            win.addEventListener('mousedown', () => { highestZ++; win.style.zIndex = highestZ; });
-
-            header.addEventListener('mousedown', (e) => {
-                isDragging = true; startX = e.clientX; startY = e.clientY;
-                initialX = win.offsetLeft; initialY = win.offsetTop;
-            });
-
-            document.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
-                win.style.left = `${initialX + (e.clientX - startX)}px`;
-                win.style.top = `${initialY + (e.clientY - startY)}px`;
-            });
-
-            document.addEventListener('mouseup', () => { isDragging = false; });
-        });
-
-// --- INCEPTION TOTEM 4TH WALL BREAK (STARGATE SG-1 VORTEX) ---
-function triggerTotem() {
-    // 1. Blackout the OS completely
-    document.body.style.background = "#000";
-    document.getElementById("desktop-wrapper").style.display = "none";
-    document.getElementById("taskbar").style.display = "none";
-
-    // 2. Inject the Matrix Canvas
-    document.body.insertAdjacentHTML('beforeend', '<canvas id="stargateCanvas" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999999;transform-origin:center center;"></canvas>');
-    const c = document.getElementById("stargateCanvas");
-    const ctx = c.getContext("2d");
-    c.width = window.innerWidth;
-    c.height = window.innerHeight;
-
-    // Authentic Katakana & Numeric characters for the rain
-    const chars = "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789".split("");
-    const fontSize = 18;
-    const columns = c.width / fontSize;
-    const drops = Array(Math.floor(columns)).fill(1);
-
-    // Run the Matrix Rain
-    const matrix = setInterval(() => {
-        ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-        ctx.fillRect(0, 0, c.width, c.height);
-        ctx.fillStyle = "#0F0"; // Neon Green
-        ctx.font = fontSize + "px monospace";
-        for (let i = 0; i < drops.length; i++) {
-            const text = chars[Math.floor(Math.random() * chars.length)];
-            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-            if (drops[i] * fontSize > c.height && Math.random() > 0.975) drops[i] = 0;
-            drops[i]++;
-        }
-    }, 33);
-
-    // 3. Stargate Warp! (SG-1 Wormhole Vortex)
-    setTimeout(() => {
-        // Sucks the user into the center by spinning violently while zooming
-        c.style.transition = "transform 5s cubic-bezier(0.5, 0, 0.1, 1), filter 5s linear";
-        c.style.transform = "scale(60) rotate(1080deg)"; // <--- The Wormhole Spin!
-        c.style.filter = "hue-rotate(1440deg) contrast(500%) brightness(300%) blur(3px) saturate(400%)";
-    }, 4000);
-
-    // 4. Fade into the Void
-    setTimeout(() => {
-        clearInterval(matrix);
-        c.style.transition = "opacity 3s ease-out";
-        c.style.opacity = "0";
-        setTimeout(() => {
-            document.getElementById("totem-overlay").style.display = "flex";
-            document.getElementById("totem-overlay").style.zIndex = "99999999";
-            c.remove(); // Clean up the canvas
-        }, 3000);
-    }, 9000); 
-}
-        // --- SYSTEM FAILURE (T-REX) ---
-        function triggerSystemFailure() {
-            document.body.classList.add('system-failure');
-            setTimeout(() => {
-                document.getElementById('crashOverlay').style.display = 'block';
-                const v = document.getElementById('dinoVideo'); v.play();
-                v.onended = () => {
-                    document.getElementById('crashOverlay').style.display = 'none';
-                    document.getElementById('rebootOverlay').style.display = 'block';
-                    document.getElementById('rebootLog').innerText = "RECOVERING SECTORS...\nSYSTEM REBOOTED.";
-                    setTimeout(()=> { document.getElementById('rebootOverlay').style.display = 'none'; document.body.classList.remove('system-failure'); }, 2000);
-                };
-            }, 500);
-        }
-
-// --- PAINT APP LOGIC ---
-const canvas = document.getElementById('p-canvas');
-const ctx = canvas.getContext('2d');
-let painting = false;
-ctx.fillStyle = "white";
-ctx.fillRect(0,0, canvas.width, canvas.height);
-
-// Get exact coordinates for both mouse and touch
-function getCoordinates(e) {
-    const r = canvas.getBoundingClientRect();
-    if (e.touches && e.touches.length > 0) {
-        return { x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top };
-    }
-    return { x: e.clientX - r.left, y: e.clientY - r.top };
-}
-
-function startPosition(e) {
-    painting = true;
-    draw(e);
-}
-
-function endPosition() {
-    painting = false;
-    ctx.beginPath();
-}
-
-function draw(e) {
-    if(!painting) return;
-    e.preventDefault(); // Prevents the whole web page from scrolling on mobile while you draw
-    
-    const coords = getCoordinates(e);
-    ctx.lineWidth = document.getElementById('p-size').value;
-    ctx.lineCap = 'round';
-    ctx.strokeStyle = document.getElementById('p-color').value;
-    
-    ctx.lineTo(coords.x, coords.y);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(coords.x, coords.y);
-}
-
-// Mouse Events (for Desktop)
-canvas.addEventListener('mousedown', startPosition);
-canvas.addEventListener('mouseup', endPosition);
-canvas.addEventListener('mousemove', draw);
-canvas.addEventListener('mouseout', endPosition); // Stops drawing if the mouse leaves the canvas
-
-// Touch Events (for Mobile)
-canvas.addEventListener('touchstart', startPosition, { passive: false });
-canvas.addEventListener('touchend', endPosition);
-canvas.addEventListener('touchmove', draw, { passive: false });
-
-function clearPaint() {
-    ctx.fillStyle = "white";
-    ctx.fillRect(0,0, canvas.width, canvas.height);
-}
-
-function savePaint() {
-    const a = document.createElement('a');
-    a.href = canvas.toDataURL();
-    a.download = 'kerrigan_art.png';
-    a.click();
-}
-
-        // --- GAMEBOY EMULATOR LOGIC ---
-        let activeRom = localStorage.getItem('k_rom_v36') || 'legendofZeldaTheOracle.gbc';
-        function swapGame(rom) { localStorage.setItem('k_rom_v36', rom); window.location.reload(); }
-        var EJS_player = '#gb-screen'; 
-        var EJS_core = 'gbc'; 
-        var EJS_gameUrl = activeRom; 
-        var EJS_pathtodata = 'https://cdn.emulatorjs.org/latest/data/';
-    </script>
-    <script src="https://cdn.emulatorjs.org/latest/data/loader.js"></script>
-</body>
-</html>
