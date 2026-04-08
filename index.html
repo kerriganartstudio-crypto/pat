@@ -27,20 +27,37 @@
         #shutdown-screen { display: none; justify-content: center; align-items: center; text-align: center; color: #f90; font-size: 24px; }
         .ascii-marine { color: #3f0; white-space: pre; font-weight: bold; margin: 20px 0; }
 
-/* === EPIC STARGATE / WARP DRIVE / MATRIX EFFECT === */
-.inception-dream {
-    animation: hyperWarp 3.4s cubic-bezier(0.5, 0, 0.1, 1) forwards;
-    transform-origin: center center;
+/* === EPIC 2001 STARGATE TUNNEL (1:13 Mark) === */
+/* This stops the desktop from shifting or inverting */
+body.inception-dream {
+    overflow: hidden;
 }
 
-@keyframes hyperWarp {
-    0% { transform: scale(1) rotate(0deg); filter: hue-rotate(0deg); }
-    25% { transform: scale(2) rotate(-5deg); filter: invert(1) hue-rotate(90deg); }
-    50% { transform: scale(6) rotate(10deg); filter: invert(0) hue-rotate(180deg); background-color: #0f0; }
-    75% { transform: scale(12) rotate(-15deg); filter: invert(1) hue-rotate(270deg); }
-    100% { transform: scale(20) rotate(45deg); filter: brightness(0); }
+/* This creates the infinite tunnel of rushing light */
+.inception-dream::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 9999998; /* Sits right over the desktop */
+    background: repeating-radial-gradient(
+        circle at center,
+        #000 0%,
+        rgba(255, 0, 255, 0.8) 1.5%,
+        #000 3%,
+        rgba(0, 255, 255, 0.8) 4.5%,
+        #000 6%,
+        rgba(255, 255, 0, 0.8) 7.5%
+    );
+    opacity: 0;
+    /* Uses a cubic-bezier curve to accelerate just like the movie */
+    animation: starGateTunnel 3.4s cubic-bezier(0.5, 0, 0.9, 0.3) forwards;
 }
 
+@keyframes starGateTunnel {
+    0% { opacity: 0; transform: scale(1); filter: hue-rotate(0deg); }
+    10% { opacity: 1; transform: scale(2); filter: hue-rotate(45deg); }
+    100% { opacity: 1; transform: scale(100); filter: hue-rotate(720deg) brightness(3); }
+}
 /* === WINDOWS 98 CURSORS === */
 body, html, .os-window, .window-content { 
     cursor: url('https://win98icons.alexmeub.com/cursors/arrow.cur'), auto !important; 
