@@ -9,14 +9,17 @@
 <body>
     <div id="game"></div>
     <script>
-        // Check the URL to see which game we should load
         const urlParams = new URLSearchParams(window.location.search);
         const romName = urlParams.get('rom') || 'SuperMarioBrosDeluxe.gbc';
 
-        // Boot the emulator
         window.EJS_player = '#game';
-        window.EJS_core = 'gbc';
-        window.EJS_gameUrl = romName;
+        
+        // SWITCHED TO THE STABLE 'gb' CORE
+        window.EJS_core = 'gb'; 
+        
+        // BULLETPROOF DIRECT URL TO YOUR GAMES
+        window.EJS_gameUrl = 'https://kerriganartstudio-crypto.github.io/pat/' + romName;
+        
         window.EJS_pathtodata = 'https://cdn.emulatorjs.org/latest/data/';
     </script>
     <script src="https://cdn.emulatorjs.org/latest/data/loader.js"></script>
