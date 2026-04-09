@@ -126,17 +126,8 @@
     <div id="desktop">
         <div class="desktop-icon" ondblclick="openWin('paint-window')"><img src="painticon.png" onerror="this.src='https://img.icons8.com/color/48/000000/ms-paint.png'"><div>Paint App</div></div>
         <div class="desktop-icon" ondblclick="openWin('tcg-window')"><img src="tcgicon.PNG"><div>Kerrigan TCG</div></div>
-<div class="os-window" id="gb-window" style="top:15%; left:10%; width:400px;">
-    <div class="window-header"><span>Gameboy.exe</span><button class="close-btn" onclick="closeWin('gb-window')">X</button></div>
-    <div class="window-content" style="background:#333; text-align:center;">
-        <div id="gb-screen" style="width:100%; height:250px; background:#000; border:10px solid #111; border-radius:5px;"></div>
-        <div style="margin-top:10px;">
-            <button onclick="swapGame('LegendofZelda TheOracle.gbc')" style="cursor:pointer; padding:5px;">Zelda</button> 
-            <button onclick="swapGame('SuperMarioBrosDeluxe.gbc')" style="cursor:pointer; padding:5px;">Mario</button>
-            <button onclick="swapGame('PokemonSilver.gbc')" style="cursor:pointer; padding:5px;">Pokémon</button>
-        </div>
-    </div>
-</div>        <div class="desktop-icon" ondblclick="openWin('myspace-window')"><img src="myspace.png" onerror="this.src='https://img.icons8.com/color/48/000000/myspace.png'"><div>Ak_Grazing.spc</div></div>
+        <div class="desktop-icon" ondblclick="openWin('gb-window')"><img src="gameboyicon.png" onerror="this.src='https://img.icons8.com/color/48/000000/nintendo-gameboy-color.png'"><div>Gameboy.exe</div></div>
+        <div class="desktop-icon" ondblclick="openWin('myspace-window')"><img src="myspace.png" onerror="this.src='https://img.icons8.com/color/48/000000/myspace.png'"><div>Ak_Grazing.spc</div></div>
         <div class="desktop-icon" ondblclick="openWin('video-window')"><img src="https://img.icons8.com/color/48/000000/youtube-play.png"><div>Video_Player</div></div>
         <div class="desktop-icon" ondblclick="openWin('tischlers-window')"><img src="https://img.icons8.com/color/48/000000/shop.png"><div>Tischlers.exe</div></div>
         
@@ -196,6 +187,12 @@
                 <button onclick="window.open('https://www.instagram.com/ak.grazing.co/')" style="margin-top:10px;">View Instagram</button>
             </div>
             <div class="ms-right">
+                <div class="ms-box" style="border-color: #FF9900;">
+                    <div class="ms-box-title" style="background: #FF9900; color: #000;">💼 Kerrigan Studio Client Project</div>
+                    <div style="padding:10px; font-weight:bold; color:#333;">
+                        Role: Curated Brand Content & Digital Identity for AK Grazing Co.
+                    </div>
+                </div>
                 <div class="ms-box">
                     <div class="ms-box-title">About Me</div>
                     <div style="padding:10px;">Curating the best charcuterie and grazing boards. Chicago area. Custom orders for any event!</div>
@@ -220,16 +217,38 @@
     </div>
 </div>
 
-<div class="os-window" id="gb-window" style="top:15%; left:10%; width:400px;"><div class="window-header"><span>Gameboy.exe</span><button class="close-btn" onclick="closeWin('gb-window')">X</button></div><div class="window-content" style="background:#333; text-align:center;"><div id="gb-screen" style="width:100%; height:250px; background:#000; border:10px solid #111; border-radius:5px;"></div><div style="margin-top:10px;"><button onclick="swapGame('legendofZeldaTheOracle.gbc')">Zelda</button> <button onclick="swapGame('SuperMarioBrosDeluxe.gbc')">Mario</button></div></div></div>
+<div class="os-window" id="gb-window" style="top:15%; left:10%; width:400px;">
+    <div class="window-header"><span>Gameboy.exe</span><button class="close-btn" onclick="closeWin('gb-window')">X</button></div>
+    <div class="window-content" style="background:#333; text-align:center;">
+        <div id="gb-screen" style="width:100%; height:250px; background:#000; border:10px solid #111; border-radius:5px;"></div>
+        <div style="margin-top:10px;">
+            <button onclick="swapGame('LegendofZelda TheOracle.gbc')" style="cursor:pointer; padding:5px;">Zelda</button> 
+            <button onclick="swapGame('SuperMarioBrosDeluxe.gbc')" style="cursor:pointer; padding:5px;">Mario</button>
+            <button onclick="swapGame('PokemonSilver.gbc')" style="cursor:pointer; padding:5px;">Pokémon</button>
+        </div>
+    </div>
+</div>
+
 <div class="os-window" id="video-window" style="top:10%; left:25%; width:500px;"><div class="window-header"><span>Video Reels</span><button class="close-btn" onclick="closeWin('video-window')">X</button></div><div class="window-content" style="background:#111; color:white; text-align:center;"><iframe width="100%" height="250" src="https://www.youtube.com/embed/fVA7WsXZrnw" frameborder="0" allowfullscreen></iframe></div></div>
-<div class="os-window" id="tischlers-window" style="top:10%; left:40%; width:300px;"><div class="window-header"><span>Tischlers Uptown Market</span><button class="close-btn" onclick="closeWin('tischlers-window')">X</button></div><div class="window-content" style="background:#fff; text-align:center;"><h4>Tischlers Uptown Market</h4><button onclick="window.open('https://tischlerfinerfoods.com/')">Website</button></div></div>
+
+<div class="os-window" id="tischlers-window" style="top:10%; left:35%; width:400px;">
+    <div class="window-header"><span>Client_Project_Tischlers.exe</span><button class="close-btn" onclick="closeWin('tischlers-window')">X</button></div>
+    <div class="window-content" style="background:#fff; text-align:center; padding: 20px;">
+        <img src="https://img.icons8.com/color/48/000000/shop.png" style="width:48px; margin-bottom:10px;">
+        <h3 style="margin: 0; color: #1b5e20;">Tischler Finer Foods</h3>
+        <div style="background: #eee; padding: 10px; margin: 15px 0; border: 1px dashed #aaa; text-align: left; font-size: 12px; color: #333;">
+            <strong>Project Scope:</strong> Video Production & Content Creation<br>
+            <strong>Role:</strong> Produced, shot, and edited 3 promotional campaign videos to drive local engagement and showcase market quality.
+        </div>
+        <button onclick="window.open('https://www.instagram.com/tischlerfinerfoods/')" style="padding: 5px 15px; cursor: pointer; font-weight: bold; background: #1b5e20; color: white; border: none; border-radius: 3px;">View Campaign on Instagram</button>
+    </div>
+</div>
 
 <script>
 // --- BOOT SEQUENCE LOGIC ---
 var rainInterval;
 function startBootSequence() {
     // PLAY AUDIO INSTANTLY UPON CLICK!
-    // The ?v=2 forces the browser to pull your newly uploaded trimmed version
     const bootSound = new Audio('startup.mp3?v=2');
     bootSound.volume = 0.5;
     bootSound.play().catch(e => console.log("Sound blocked:", e));
@@ -281,7 +300,7 @@ function typeWriter() {
         clearInterval(rainInterval);
         document.getElementById('matrix-intro').style.display = "none";
         
-        // Show boot screen (Sound is already playing!)
+        // Show boot screen 
         document.getElementById('boot-screen').style.display = "block";
         
         setTimeout(() => { document.getElementById('boot-screen').style.display = "none"; }, 1500);
@@ -404,7 +423,7 @@ document.getElementById('start-btn').addEventListener('click', () => {
 function updateClock() { document.getElementById('clock').innerText = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}); }
 setInterval(updateClock, 1000); updateClock();
 
-// --- GAMEBOY ---
+// --- GAMEBOY DEFAULT (SUPER MARIO) ---
 let activeRom = localStorage.getItem('k_rom_v36') || 'SuperMarioBrosDeluxe.gbc';
 function swapGame(rom) { localStorage.setItem('k_rom_v36', rom); window.location.reload(); }
 var EJS_player = '#gb-screen'; var EJS_core = 'gbc'; var EJS_gameUrl = activeRom; var EJS_pathtodata = 'https://cdn.emulatorjs.org/latest/data/';
