@@ -544,11 +544,22 @@ function triggerTotem() {
     const warpScreen = document.getElementById('warpOverlay');
     const warpVid = document.getElementById('warpVideo');
     
-    // Show and play the video
+    // 1. Set up the starting state (Hidden, heavily blurred, super bright, and zoomed in)
+    warpScreen.style.opacity = '0';
     warpScreen.style.display = 'block';
-    warpVid.play().catch(e => console.log("Video play blocked"));
+    warpScreen.style.filter = 'blur(20px) brightness(5)';
+    warpScreen.style.transform = 'scale(1.5)';
+    warpScreen.style.transition = 'all 1.5s cubic-bezier(0.2, 0.8, 0.2, 1)'; // Smooth ease-out
 
-    // Wait 3.5 seconds, then cut to black
+    // 2. A split second later, snap it into focus and play
+    setTimeout(() => {
+        warpScreen.style.opacity = '1';
+        warpScreen.style.filter = 'blur(0px) brightness(1)';
+        warpScreen.style.transform = 'scale(1)';
+        warpVid.play().catch(e => console.log("Video play blocked"));
+    }, 50);
+
+    // 3. Wait 3.5 seconds, then fade to the void
     setTimeout(() => {
         document.body.style.background = "#000"; 
         document.getElementById('desktop').style.display = "none"; 
@@ -556,7 +567,7 @@ function triggerTotem() {
         
         warpScreen.style.display = "none"; 
         document.getElementById('totem-overlay').style.display = 'flex'; 
-    }, 3500); 
+    }, 3800); // Extended slightly to let the cool transition breathe
 }
 
 function triggerSystemFailure() {
