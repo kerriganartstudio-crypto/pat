@@ -182,8 +182,20 @@
     </div>
 </div>
 
-<div class="os-window" id="tcg-window" style="top:10%; left:50%; width:300px;"><div class="window-header"><span>Kerrigan TCG</span><button class="close-btn" onclick="closeWin('tcg-window')">X</button></div><div class="window-content" style="background:#111; text-align:center; padding: 20px;"><img src="tcgicon.PNG" style="width:100%; border: 6px solid #c0c0c0; border-radius:10px;"></div></div>
-<div class="os-window" id="gb-window" style="top:15%; left:10%; width:400px;"><div class="window-header"><span>Gameboy.exe</span><button class="close-btn" onclick="closeWin('gb-window')">X</button></div><div class="window-content" style="background:#333; text-align:center;"><div id="gb-screen" style="width:100%; height:250px; background:#000; border:10px solid #111; border-radius:5px;"></div><div style="margin-top:10px;"><button onclick="swapGame('legendofZeldaTheOracle.gbc')">Zelda</button> <button onclick="swapGame('SuperMarioBrosDeluxe.gbc')">Mario</button></div></div></div>
+<div class="os-window" id="tcg-window" style="top:10%; left:50%; width:300px;">
+        <div class="window-header">
+            <span>Kerrigan TCG</span>
+            <button class="close-btn" onclick="closeWin('tcg-window')">X</button>
+        </div>
+        <div class="window-content" style="background:#111; text-align:center; perspective:1000px; padding: 20px;">
+            <div id="card-inner" style="width:250px; height:350px; margin:0 auto; position:relative; transition:transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style:preserve-3d; cursor:pointer;" 
+                 onclick="this.style.transform = this.style.transform === 'rotateY(180deg)' ? 'rotateY(0deg)' : 'rotateY(180deg)'"
+                 ondblclick="this.style.transform = this.style.transform === 'rotateY(180deg)' ? 'rotateY(0deg)' : 'rotateY(180deg)'">
+                <div style="position:absolute; width:100%; height:100%; backface-visibility:hidden; background: url('fronttcg.png') center/cover; border: 6px solid #c0c0c0; border-radius:10px; transform: rotateY(180deg);"></div>
+                <div style="position:absolute; width:100%; height:100%; backface-visibility:hidden; background: url('tcgicon.PNG') center/cover; border: 6px solid #c0c0c0; border-radius:10px;"></div>
+            </div>
+        </div>
+    </div><div class="os-window" id="gb-window" style="top:15%; left:10%; width:400px;"><div class="window-header"><span>Gameboy.exe</span><button class="close-btn" onclick="closeWin('gb-window')">X</button></div><div class="window-content" style="background:#333; text-align:center;"><div id="gb-screen" style="width:100%; height:250px; background:#000; border:10px solid #111; border-radius:5px;"></div><div style="margin-top:10px;"><button onclick="swapGame('legendofZeldaTheOracle.gbc')">Zelda</button> <button onclick="swapGame('SuperMarioBrosDeluxe.gbc')">Mario</button></div></div></div>
 <div class="os-window" id="video-window" style="top:10%; left:25%; width:500px;"><div class="window-header"><span>Video Reels</span><button class="close-btn" onclick="closeWin('video-window')">X</button></div><div class="window-content" style="background:#111; color:white; text-align:center;"><iframe width="100%" height="250" src="https://www.youtube.com/embed/fVA7WsXZrnw" frameborder="0" allowfullscreen></iframe></div></div>
 <div class="os-window" id="tischlers-window" style="top:10%; left:40%; width:300px;"><div class="window-header"><span>Tischlers Uptown Market</span><button class="close-btn" onclick="closeWin('tischlers-window')">X</button></div><div class="window-content" style="background:#fff; text-align:center;"><h4>Tischlers Uptown Market</h4><button onclick="window.open('https://tischlerfinerfoods.com/')">Website</button></div></div>
 
