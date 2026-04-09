@@ -14,7 +14,7 @@
     <style>
         /* === SYSTEM CORE === */
         body { 
-            background-color: #3a6ea5; /* Fallback retro blue color if bliss.jpg is missing */
+            background-color: #3a6ea5; 
             background-image: url('bliss.jpg'); 
             background-repeat: no-repeat;
             background-position: center center;
@@ -219,6 +219,12 @@
 // --- BOOT SEQUENCE LOGIC ---
 var rainInterval;
 function startBootSequence() {
+    // PLAY AUDIO INSTANTLY UPON CLICK!
+    // The ?v=2 forces the browser to pull your newly uploaded trimmed version
+    const bootSound = new Audio('startup.mp3?v=2');
+    bootSound.volume = 0.5;
+    bootSound.play().catch(e => console.log("Sound blocked:", e));
+
     document.getElementById('pre-boot').style.display = 'none';
     document.getElementById('matrix-intro').style.display = 'flex';
     
@@ -266,11 +272,8 @@ function typeWriter() {
         clearInterval(rainInterval);
         document.getElementById('matrix-intro').style.display = "none";
         
-        // Show boot screen and play sound!
+        // Show boot screen (Sound is already playing!)
         document.getElementById('boot-screen').style.display = "block";
-        const bootSound = new Audio('startup.mp3');
-        bootSound.volume = 0.5;
-        bootSound.play().catch(e => console.log("Sound blocked:", e));
         
         setTimeout(() => { document.getElementById('boot-screen').style.display = "none"; }, 1500);
     }
@@ -323,7 +326,7 @@ function triggerTotem() {
     }, 3800);
 }
 
-// 5 SECOND CRASH TIMER IS BACK
+// 5 SECOND CRASH TIMER
 function triggerSystemFailure() {
     const crash = document.getElementById('crashOverlay');
     const dino = document.getElementById('dinoVideo');
