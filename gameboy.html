@@ -1,1 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; }
+    </style>
+</head>
+<body>
+    <div id="game"></div>
+    <script>
+        // Check the URL to see which game we should load
+        const urlParams = new URLSearchParams(window.location.search);
+        const romName = urlParams.get('rom') || 'SuperMarioBrosDeluxe.gbc';
 
+        // Boot the emulator
+        window.EJS_player = '#game';
+        window.EJS_core = 'gbc';
+        window.EJS_gameUrl = romName;
+        window.EJS_pathtodata = 'https://cdn.emulatorjs.org/latest/data/';
+    </script>
+    <script src="https://cdn.emulatorjs.org/latest/data/loader.js"></script>
+</body>
+</html>
