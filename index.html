@@ -626,7 +626,8 @@ function triggerSystemFailure() {
             crash.style.display = 'none';
         }, 5000); // Glitch ends after 5 seconds
     }
-}// --- 6. GAMEBOY EMULATOR LOGIC ---
+}
+    // --- 6. GAMEBOY EMULATOR LOGIC ---
 function swapGame(game) {
     const screen = document.getElementById('gb-screen');
     
@@ -661,7 +662,8 @@ document.addEventListener('click', (e) => {
         startMenu.style.display = 'none';
     }
 });
-}// --- 7. THE WAKE UP SEQUENCE ---
+}
+    // --- 7. THE WAKE UP SEQUENCE ---
 function wakeUp() {
     // 1. Create a blinding white flash overlay
     const flash = document.createElement('div');
