@@ -237,9 +237,15 @@ function typeWriter() {
         } else {
             setTimeout(() => { document.getElementById('matrix-text').innerHTML = ""; charIndex = 0; lineIndex++; typeWriter(); }, 1200); 
         }
-    } else {
+} else {
         clearInterval(rainInterval);
         document.getElementById('matrix-intro').style.display = "none";
+        
+        // --- PLAY STARTUP SOUND ---
+        const bootSound = new Audio('startup.mp3');
+        bootSound.volume = 0.5; // 50% volume so it doesn't blow out speakers
+        bootSound.play().catch(e => console.log("Browser blocked auto-play"));
+        
         setTimeout(() => { document.getElementById('boot-screen').style.display = "none"; }, 1500);
     }
 }
