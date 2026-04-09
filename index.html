@@ -126,8 +126,17 @@
     <div id="desktop">
         <div class="desktop-icon" ondblclick="openWin('paint-window')"><img src="painticon.png" onerror="this.src='https://img.icons8.com/color/48/000000/ms-paint.png'"><div>Paint App</div></div>
         <div class="desktop-icon" ondblclick="openWin('tcg-window')"><img src="tcgicon.PNG"><div>Kerrigan TCG</div></div>
-        <div class="desktop-icon" ondblclick="openWin('gb-window')"><img src="gameboyicon.png" onerror="this.src='https://img.icons8.com/color/48/000000/nintendo-gameboy-color.png'"><div>Gameboy.exe</div></div>
-        <div class="desktop-icon" ondblclick="openWin('myspace-window')"><img src="myspace.png" onerror="this.src='https://img.icons8.com/color/48/000000/myspace.png'"><div>Ak_Grazing.spc</div></div>
+<div class="os-window" id="gb-window" style="top:15%; left:10%; width:400px;">
+    <div class="window-header"><span>Gameboy.exe</span><button class="close-btn" onclick="closeWin('gb-window')">X</button></div>
+    <div class="window-content" style="background:#333; text-align:center;">
+        <div id="gb-screen" style="width:100%; height:250px; background:#000; border:10px solid #111; border-radius:5px;"></div>
+        <div style="margin-top:10px;">
+            <button onclick="swapGame('LegendofZelda TheOracle.gbc')" style="cursor:pointer; padding:5px;">Zelda</button> 
+            <button onclick="swapGame('SuperMarioBrosDeluxe.gbc')" style="cursor:pointer; padding:5px;">Mario</button>
+            <button onclick="swapGame('PokemonSilver.gbc')" style="cursor:pointer; padding:5px;">Pokémon</button>
+        </div>
+    </div>
+</div>        <div class="desktop-icon" ondblclick="openWin('myspace-window')"><img src="myspace.png" onerror="this.src='https://img.icons8.com/color/48/000000/myspace.png'"><div>Ak_Grazing.spc</div></div>
         <div class="desktop-icon" ondblclick="openWin('video-window')"><img src="https://img.icons8.com/color/48/000000/youtube-play.png"><div>Video_Player</div></div>
         <div class="desktop-icon" ondblclick="openWin('tischlers-window')"><img src="https://img.icons8.com/color/48/000000/shop.png"><div>Tischlers.exe</div></div>
         
@@ -396,7 +405,7 @@ function updateClock() { document.getElementById('clock').innerText = new Date()
 setInterval(updateClock, 1000); updateClock();
 
 // --- GAMEBOY ---
-let activeRom = localStorage.getItem('k_rom_v36') || 'legendofZeldaTheOracle.gbc';
+let activeRom = localStorage.getItem('k_rom_v36') || 'SuperMarioBrosDeluxe.gbc';
 function swapGame(rom) { localStorage.setItem('k_rom_v36', rom); window.location.reload(); }
 var EJS_player = '#gb-screen'; var EJS_core = 'gbc'; var EJS_gameUrl = activeRom; var EJS_pathtodata = 'https://cdn.emulatorjs.org/latest/data/';
 </script>
