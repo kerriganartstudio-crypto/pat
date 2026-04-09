@@ -220,7 +220,7 @@
 <div class="os-window" id="gb-window" style="top:15%; left:10%; width:400px;">
     <div class="window-header"><span>Gameboy.exe</span><button class="close-btn" onclick="closeWin('gb-window')">X</button></div>
     <div class="window-content" style="background:#333; text-align:center;">
-        <div id="gb-screen" style="width:100%; height:250px; background:#000; border:10px solid #111; border-radius:5px;"></div>
+        <div id="gb-screen" style="width:100%; height:250px; background:#000; border:10px solid #111; border-radius:5px; overflow:hidden;"></div>
         <div style="margin-top:10px;">
             <button onclick="swapGame('LegendofZelda the Oracle.gbc')" style="cursor:pointer; padding:5px;">Zelda</button> 
             <button onclick="swapGame('SuperMarioBrosDeluxe.gbc')" style="cursor:pointer; padding:5px;">Mario</button>
@@ -280,7 +280,6 @@ function startBootSequence() {
         rainInterval = setInterval(drawRain, 33);
     }
     
-    // Start typing the text
     typeWriter();
 }
 
@@ -350,7 +349,6 @@ function triggerTotem() {
     }, 3800);
 }
 
-// 5 SECOND CRASH TIMER
 function triggerSystemFailure() {
     const crash = document.getElementById('crashOverlay');
     const dino = document.getElementById('dinoVideo');
@@ -419,26 +417,47 @@ document.getElementById('start-btn').addEventListener('click', () => {
 function updateClock() { document.getElementById('clock').innerText = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}); }
 setInterval(updateClock, 1000); updateClock();
 
-// --- GAMEBOY DEFAULT (SUPER MARIO) ---
+// --- NEW GAMEBOY LOGIC (NO REFRESHING!) ---
 let activeRom = localStorage.getItem('k_rom_v36') || 'SuperMarioBrosDeluxe.gbc';
 
 function swapGame(rom) { 
     localStorage.setItem('k_rom_v36', rom); 
-    sessionStorage.setItem('skip_boot', 'true'); // Remembers we just changed a game
-    window.location.reload(); 
+    const screen = document.getElementById('gb-screen');
+    
+    // Clear out the old game entirely
+    screen.innerHTML = ''; 
+    
+    // Create an invisible "mini-window" (iframe) just for the emulator
+    const iframe = document.createElement('iframe');
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+    iframe.style.border = 'none';
+    screen.appendChild(iframe);
+    
+    // Inject the emulator code directly into the mini-window so the main page never has to reload!
+    const doc = iframe.contentWindow.document;
+    doc.open();
+    doc.write(`
+        <html><head>
+        <style>body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; }</style>
+        </head><body>
+        <div id="game"></div>
+        <script>
+            window.EJS_player = '#game';
+            window.EJS_core = 'gbc';
+            window.EJS_gameUrl = 'https://kerriganartstudio-crypto.github.io/pat/${encodeURIComponent(rom)}';
+            window.EJS_pathtodata = 'https://cdn.emulatorjs.org/latest/data/';
+        </scr` + `ipt>
+        <script src="https://cdn.emulatorjs.org/latest/data/loader.js"></scr` + `ipt>
+        </body></html>
+    `);
+    doc.close();
 }
 
-var EJS_player = '#gb-screen'; var EJS_core = 'gbc'; var EJS_gameUrl = activeRom; var EJS_pathtodata = 'https://cdn.emulatorjs.org/latest/data/';
-
-// --- GAME SWAP FAST-PASS (SKIPS BOOT SCREEN IF RESTARTING) ---
+// Load the default game quietly in the background when the desktop turns on
 window.addEventListener('DOMContentLoaded', () => {
-    if (sessionStorage.getItem('skip_boot') === 'true') {
-        sessionStorage.removeItem('skip_boot'); // Clean up the memory
-        document.getElementById('pre-boot').style.display = 'none'; // Instantly hide the boot screen
-        openWin('gb-window'); // Instantly pop the Gameboy back open!
-    }
+    swapGame(activeRom);
 });
 </script>
-<script src="https://cdn.emulatorjs.org/latest/data/loader.js"></script>
 </body>
 </html>
