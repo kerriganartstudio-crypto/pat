@@ -541,19 +541,22 @@ function updateArt() {
 
 // --- 5. SYSTEM APPS (Totem & Crash) ---
 function triggerTotem() {
-    // 1. Start the massive 2001 Space Odyssey warp effect
-    document.body.classList.add('inception-dream'); 
+    const warpScreen = document.getElementById('warpOverlay');
+    const warpVid = document.getElementById('warpVideo');
     
-    // 2. Wait for the screen to be completely "sucked in" before showing the text
+    // Show and play the video
+    warpScreen.style.display = 'block';
+    warpVid.play().catch(e => console.log("Video play blocked"));
+
+    // Wait 3.5 seconds, then cut to black
     setTimeout(() => {
-        document.body.style.background = "#000"; // Turn the void black
-        document.getElementById('desktop').style.display = "none";
-        document.getElementById('taskbar').style.display = "none";
-        document.body.classList.remove('inception-dream'); // Reset zoom so text is readable
+        document.body.style.background = "#000"; 
+        document.getElementById('desktop').style.display = "none"; 
+        document.getElementById('taskbar').style.display = "none"; 
         
-        // Boom. Show the text.
-        document.getElementById('totem-overlay').style.display = 'flex';
-    }, 3400); // This triggers right as the 3.5-second animation peaks
+        warpScreen.style.display = "none"; 
+        document.getElementById('totem-overlay').style.display = 'flex'; 
+    }, 3500); 
 }
 
 function triggerSystemFailure() {
