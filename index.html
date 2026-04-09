@@ -218,7 +218,9 @@ button, .desktop-icon, .task-tab, .close-btn, a, #card-inner {
     <div id="crashOverlay"><video id="dinoVideo" src="donotclick.mp4" style="width:100%;height:100%;object-fit:cover;"></video></div>
     <div id="rebootOverlay" style="color:#3f0; padding:40px; font-family:monospace;"><pre id="rebootLog"></pre></div>
     <div id="crt-overlay"></div>
-
+<div id="warpOverlay" style="display:none; position:fixed; inset:0; z-index:9999998; background:#000;">
+    <video id="warpVideo" src="warp.mp4" style="width:100%; height:100%; object-fit:cover;" muted playsinline></video>
+</div>
     <div id="desktop-wrapper">
 <div id="desktop">
             <div class="desktop-icon" ondblclick="openWin('paint-window', 'Paint')"><img src="painticon.png" onerror="this.src='https://img.icons8.com/color/48/000000/ms-paint.png'"><div>Paint App</div></div>
