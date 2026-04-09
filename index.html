@@ -293,10 +293,17 @@ function triggerSystemFailure() {
     const dino = document.getElementById('dinoVideo');
     crash.style.display = 'block';
     document.body.classList.add('system-failure');
-    dino.play().catch(e => console.log("Click required")); 
-    setTimeout(() => { document.body.classList.remove('system-failure'); crash.style.display = 'none'; }, 5000);
+    
+    // Rewind the video to the beginning just in case
+    dino.currentTime = 0; 
+    dino.play().catch(e => console.log("Click required"));
+    
+    // Let the full video play, and close ONLY when it finishes
+    dino.onended = () => {
+        document.body.classList.remove('system-failure');
+        crash.style.display = 'none';
+    };
 }
-
 function wakeUp() { window.location.href = 'https://kerriganartstudioportfolio.my.canva.site/patrick-kerrigan-graphic-designer-2026'; }
 
 // --- NEON PAINT APP ---
