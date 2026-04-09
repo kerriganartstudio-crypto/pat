@@ -4,17 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kerrigan Studio - OS 2001 FINAL</title>
-    <style><meta property="og:title" content="Kerrigan Studio - OS 2001">
+    
+    <meta property="og:title" content="Kerrigan Studio - OS 2001">
     <meta property="og:description" content="Step into the retro digital studio of Patrick Kerrigan. USMC Veteran | Graphic Designer.">
     <meta property="og:image" content="https://kerriganartstudio-crypto.github.io/pat/tcgicon.PNG">
     <meta property="og:url" content="https://kerriganartstudio-crypto.github.io/pat/">
     <meta name="twitter:card" content="summary_large_image">
-        /* === SYSTEM CORE & MOBILE FIXES === */
+    
+    <style>
+        /* === SYSTEM CORE === */
         body { 
-            background: #000 url('bliss.jpg') no-repeat center center fixed;
-            background-size: cover;
+            background-color: #3a6ea5; /* Fallback retro blue color if bliss.jpg is missing */
+            background-image: url('bliss.jpg'); 
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
+            background-size: cover; 
             margin: 0; overflow: hidden; font-family: 'Tahoma', sans-serif; 
-            height: 100vh; width: 100vw;
+            height: 100vh; width: 100vw; 
         }
         
         /* === CRT DOME GLASS MONITOR EFFECT === */
@@ -25,7 +32,6 @@
             box-shadow: inset 0 0 150px rgba(0,0,0,0.9), inset 0 0 50px rgba(0,0,0,0.7);
             border-radius: 20px;
         }
-
         #crt-overlay::after {
             content: ""; position: absolute; top: -5%; left: 0; right: 0; height: 35%;
             background: radial-gradient(ellipse at center, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 60%);
@@ -33,7 +39,7 @@
         }
 
         /* === BOOT & SCREENS === */
-        #boot-screen { position: fixed; inset: 0; background: #000; color: #c0c0c0; font-family: monospace; z-index: 2000000; padding: 40px; }
+        #boot-screen { position: fixed; inset: 0; background: #000; color: #c0c0c0; font-family: monospace; z-index: 2000000; padding: 40px; display: none; }
         .ascii-marine { color: #3f0; white-space: pre; font-weight: bold; margin: 20px 0; }
 
         /* === DESKTOP ICONS === */
@@ -86,7 +92,11 @@
 </head>
 <body>
 
-<div id="matrix-intro" style="position:fixed; inset:0; background:#000; color:#0f0; font-family:monospace; z-index:3000000; display:flex; flex-direction:column; justify-content:center; padding:40px; font-size:24px; line-height:1.5; text-shadow: 0 0 8px rgba(0,255,0,0.9); overflow:hidden;">
+<div id="pre-boot" style="position:fixed; inset:0; background:#000; z-index:4000000; display:flex; justify-content:center; align-items:center; color:#0f0; font-family:monospace; cursor:pointer;" onclick="startBootSequence()">
+    <h2 style="animation: blink 1s infinite;">[ CLICK TO INITIATE BOOT SEQUENCE ]</h2>
+</div>
+
+<div id="matrix-intro" style="position:fixed; inset:0; background:#000; color:#0f0; font-family:monospace; z-index:3000000; display:none; flex-direction:column; justify-content:center; padding:40px; font-size:24px; line-height:1.5; text-shadow: 0 0 8px rgba(0,255,0,0.9); overflow:hidden;">
     <canvas id="matrix-canvas" style="position:absolute; inset:0; z-index:-1; opacity:0.3;"></canvas>
     <div id="matrix-text" style="position:relative; z-index:1;"></div>
     <span id="cursor" style="position:relative; z-index:1; width:12px; height:24px; background:#0f0; display:inline-block; animation: blink 0.8s infinite; box-shadow: 0 0 10px #0f0;"></span>
@@ -187,43 +197,58 @@
 </div>
 
 <div class="os-window" id="tcg-window" style="top:10%; left:50%; width:300px;">
-        <div class="window-header">
-            <span>Kerrigan TCG</span>
-            <button class="close-btn" onclick="closeWin('tcg-window')">X</button>
-        </div>
-        <div class="window-content" style="background:#111; text-align:center; perspective:1000px; padding: 20px;">
-            <div id="card-inner" style="width:250px; height:350px; margin:0 auto; position:relative; transition:transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style:preserve-3d; cursor:pointer;" 
-                 onclick="this.style.transform = this.style.transform === 'rotateY(180deg)' ? 'rotateY(0deg)' : 'rotateY(180deg)'"
-                 ondblclick="this.style.transform = this.style.transform === 'rotateY(180deg)' ? 'rotateY(0deg)' : 'rotateY(180deg)'">
-                <div style="position:absolute; width:100%; height:100%; backface-visibility:hidden; background: url('fronttcg.png') center/100% 100% no-repeat; border: 6px solid #c0c0c0; border-radius:10px; transform: rotateY(180deg);"></div>
-                <div style="position:absolute; width:100%; height:100%; backface-visibility:hidden; background: url('tcgicon.PNG') center/100% 100% no-repeat; border: 6px solid #c0c0c0; border-radius:10px;"></div>
-            </div>
+    <div class="window-header">
+        <span>Kerrigan TCG</span>
+        <button class="close-btn" onclick="closeWin('tcg-window')">X</button>
+    </div>
+    <div class="window-content" style="background:#111; text-align:center; perspective:1000px; padding: 20px;">
+        <div id="card-inner" style="width:250px; height:350px; margin:0 auto; position:relative; transition:transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style:preserve-3d; cursor:pointer;" 
+             onclick="this.style.transform = this.style.transform === 'rotateY(180deg)' ? 'rotateY(0deg)' : 'rotateY(180deg)'"
+             ondblclick="this.style.transform = this.style.transform === 'rotateY(180deg)' ? 'rotateY(0deg)' : 'rotateY(180deg)'">
+            <div style="position:absolute; width:100%; height:100%; backface-visibility:hidden; background: url('fronttcg.png') center/100% 100% no-repeat; border: 6px solid #c0c0c0; border-radius:10px; transform: rotateY(180deg);"></div>
+            <div style="position:absolute; width:100%; height:100%; backface-visibility:hidden; background: url('tcgicon.PNG') center/100% 100% no-repeat; border: 6px solid #c0c0c0; border-radius:10px;"></div>
         </div>
     </div>
+</div>
+
+<div class="os-window" id="gb-window" style="top:15%; left:10%; width:400px;"><div class="window-header"><span>Gameboy.exe</span><button class="close-btn" onclick="closeWin('gb-window')">X</button></div><div class="window-content" style="background:#333; text-align:center;"><div id="gb-screen" style="width:100%; height:250px; background:#000; border:10px solid #111; border-radius:5px;"></div><div style="margin-top:10px;"><button onclick="swapGame('legendofZeldaTheOracle.gbc')">Zelda</button> <button onclick="swapGame('SuperMarioBrosDeluxe.gbc')">Mario</button></div></div></div>
+<div class="os-window" id="video-window" style="top:10%; left:25%; width:500px;"><div class="window-header"><span>Video Reels</span><button class="close-btn" onclick="closeWin('video-window')">X</button></div><div class="window-content" style="background:#111; color:white; text-align:center;"><iframe width="100%" height="250" src="https://www.youtube.com/embed/fVA7WsXZrnw" frameborder="0" allowfullscreen></iframe></div></div>
+<div class="os-window" id="tischlers-window" style="top:10%; left:40%; width:300px;"><div class="window-header"><span>Tischlers Uptown Market</span><button class="close-btn" onclick="closeWin('tischlers-window')">X</button></div><div class="window-content" style="background:#fff; text-align:center;"><h4>Tischlers Uptown Market</h4><button onclick="window.open('https://tischlerfinerfoods.com/')">Website</button></div></div>
+
 <script>
-// --- MATRIX INTRO ---
-const canvas = document.getElementById('matrix-canvas');
-const ctx = canvas.getContext('2d');
-if (canvas) {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    const chars = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ$+-*/=%\"'#&_(),.;:?!\\|{}<>[]^~";
-    const fontSize = 16;
-    const columns = canvas.width / fontSize;
-    const drops = Array(Math.floor(columns)).fill(1);
-    function drawRain() {
-        ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "#0F0";
-        ctx.font = fontSize + "px monospace";
-        for (let i = 0; i < drops.length; i++) {
-            const text = chars.charAt(Math.floor(Math.random() * chars.length));
-            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-            drops[i]++;
+// --- BOOT SEQUENCE LOGIC ---
+var rainInterval;
+function startBootSequence() {
+    document.getElementById('pre-boot').style.display = 'none';
+    document.getElementById('matrix-intro').style.display = 'flex';
+    
+    // Start Matrix Rain
+    const canvas = document.getElementById('matrix-canvas');
+    const ctx = canvas.getContext('2d');
+    if (canvas) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const chars = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ$+-*/=%\"'#&_(),.;:?!\\|{}<>[]^~";
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+        function drawRain() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#0F0";
+            ctx.font = fontSize + "px monospace";
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
         }
+        rainInterval = setInterval(drawRain, 33);
     }
-    var rainInterval = setInterval(drawRain, 33);
+    
+    // Start typing the text
+    typeWriter();
 }
 
 const introText = ["Knock Knock...Wake up...", "Kerrigan Studio has you...", "Follow the EYE"];
@@ -237,19 +262,19 @@ function typeWriter() {
         } else {
             setTimeout(() => { document.getElementById('matrix-text').innerHTML = ""; charIndex = 0; lineIndex++; typeWriter(); }, 1200); 
         }
-} else {
+    } else {
         clearInterval(rainInterval);
         document.getElementById('matrix-intro').style.display = "none";
         
-        // --- PLAY STARTUP SOUND ---
+        // Show boot screen and play sound!
+        document.getElementById('boot-screen').style.display = "block";
         const bootSound = new Audio('startup.mp3');
-        bootSound.volume = 0.5; // 50% volume so it doesn't blow out speakers
-        bootSound.play().catch(e => console.log("Browser blocked auto-play"));
+        bootSound.volume = 0.5;
+        bootSound.play().catch(e => console.log("Sound blocked:", e));
         
         setTimeout(() => { document.getElementById('boot-screen').style.display = "none"; }, 1500);
     }
 }
-document.addEventListener('DOMContentLoaded', typeWriter);
 
 // --- WINDOW LOGIC ---
 let highestZ = 100;
@@ -298,22 +323,22 @@ function triggerTotem() {
     }, 3800);
 }
 
+// 5 SECOND CRASH TIMER IS BACK
 function triggerSystemFailure() {
     const crash = document.getElementById('crashOverlay');
     const dino = document.getElementById('dinoVideo');
     crash.style.display = 'block';
     document.body.classList.add('system-failure');
     
-    // Rewind the video to the beginning just in case
     dino.currentTime = 0; 
     dino.play().catch(e => console.log("Click required"));
     
-    // Let the full video play, and close ONLY when it finishes
-    dino.onended = () => {
+    setTimeout(() => {
         document.body.classList.remove('system-failure');
         crash.style.display = 'none';
-    };
+    }, 5000);
 }
+
 function wakeUp() { window.location.href = 'https://kerriganartstudioportfolio.my.canva.site/patrick-kerrigan-graphic-designer-2026'; }
 
 // --- NEON PAINT APP ---
