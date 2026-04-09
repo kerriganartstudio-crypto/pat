@@ -220,11 +220,13 @@
 <div class="os-window" id="gb-window" style="top:15%; left:10%; width:400px;">
     <div class="window-header"><span>Gameboy.exe</span><button class="close-btn" onclick="closeWin('gb-window')">X</button></div>
     <div class="window-content" style="background:#333; text-align:center;">
-        <div id="gb-screen" style="width:100%; height:250px; background:#000; border:10px solid #111; border-radius:5px;"></div>
+        <div id="gb-screen" style="width:100%; height:250px; background:#000; border:10px solid #111; border-radius:5px; overflow:hidden;">
+            <iframe id="gb-iframe" src="gameboy.html?rom=SuperMarioBrosDeluxe.gbc" style="width:100%; height:100%; border:none;" allow="autoplay"></iframe>
+        </div>
         <div style="margin-top:10px;">
-            <button onclick="swapGame('LegendofZeldatheOracle.gbc')" style="cursor:pointer; padding:5px;">Zelda</button> 
-            <button onclick="swapGame('SuperMarioBrosDeluxe.gbc')" style="cursor:pointer; padding:5px;">Mario</button>
-            <button onclick="swapGame('PokemonSilver.gbc')" style="cursor:pointer; padding:5px;">Pokémon</button>
+            <button onclick="document.getElementById('gb-iframe').src='gameboy.html?rom=LegendofZeldatheOracle.gbc'" style="cursor:pointer; padding:5px;">Zelda</button> 
+            <button onclick="document.getElementById('gb-iframe').src='gameboy.html?rom=SuperMarioBrosDeluxe.gbc'" style="cursor:pointer; padding:5px;">Mario</button>
+            <button onclick="document.getElementById('gb-iframe').src='gameboy.html?rom=PokemonSilver.gbc'" style="cursor:pointer; padding:5px;">Pokémon</button>
         </div>
     </div>
 </div>
@@ -416,32 +418,6 @@ document.getElementById('start-btn').addEventListener('click', () => {
 function updateClock() { document.getElementById('clock').innerText = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}); }
 setInterval(updateClock, 1000); updateClock();
 
-
-// --- FIXED GAMEBOY LOGIC (FAST-PASS RELOAD) ---
-let activeRom = localStorage.getItem('k_rom_v36') || 'SuperMarioBrosDeluxe.gbc';
-
-function swapGame(rom) { 
-    localStorage.setItem('k_rom_v36', rom); 
-    sessionStorage.setItem('skip_boot', 'true'); // Leave a hidden note for the browser!
-    window.location.reload(); 
-}
-
-var EJS_player = '#gb-screen'; 
-var EJS_core = 'gbc'; 
-var EJS_gameUrl = activeRom; 
-var EJS_pathtodata = 'https://cdn.emulatorjs.org/latest/data/';
-
-// IF WE JUST SWAPPED GAMES, INSTANTLY HIDE THE BOOT SCREENS AND OPEN THE GAMEBOY
-window.addEventListener('DOMContentLoaded', () => {
-    if (sessionStorage.getItem('skip_boot') === 'true') {
-        sessionStorage.removeItem('skip_boot'); 
-        document.getElementById('pre-boot').style.display = 'none'; 
-        document.getElementById('matrix-intro').style.display = 'none'; 
-        document.getElementById('boot-screen').style.display = 'none'; 
-        setTimeout(() => openWin('gb-window'), 100); 
-    }
-});
 </script>
-<script src="https://cdn.emulatorjs.org/latest/data/loader.js"></script>
 </body>
 </html>
