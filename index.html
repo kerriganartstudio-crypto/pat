@@ -222,7 +222,7 @@
     <div class="window-content" style="background:#333; text-align:center;">
         <div id="gb-screen" style="width:100%; height:250px; background:#000; border:10px solid #111; border-radius:5px;"></div>
         <div style="margin-top:10px;">
-            <button onclick="swapGame('LegendofZelda TheOracle.gbc')" style="cursor:pointer; padding:5px;">Zelda</button> 
+            <button onclick="swapGame('LegendofZelda the Oracle.gbc')" style="cursor:pointer; padding:5px;">Zelda</button> 
             <button onclick="swapGame('SuperMarioBrosDeluxe.gbc')" style="cursor:pointer; padding:5px;">Mario</button>
             <button onclick="swapGame('PokemonSilver.gbc')" style="cursor:pointer; padding:5px;">Pokémon</button>
         </div>
@@ -248,7 +248,6 @@
 // --- BOOT SEQUENCE LOGIC ---
 var rainInterval;
 function startBootSequence() {
-    // PLAY AUDIO INSTANTLY UPON CLICK!
     const bootSound = new Audio('startup.mp3?v=2');
     bootSound.volume = 0.5;
     bootSound.play().catch(e => console.log("Sound blocked:", e));
@@ -299,10 +298,7 @@ function typeWriter() {
     } else {
         clearInterval(rainInterval);
         document.getElementById('matrix-intro').style.display = "none";
-        
-        // Show boot screen 
         document.getElementById('boot-screen').style.display = "block";
-        
         setTimeout(() => { document.getElementById('boot-screen').style.display = "none"; }, 1500);
     }
 }
@@ -425,8 +421,23 @@ setInterval(updateClock, 1000); updateClock();
 
 // --- GAMEBOY DEFAULT (SUPER MARIO) ---
 let activeRom = localStorage.getItem('k_rom_v36') || 'SuperMarioBrosDeluxe.gbc';
-function swapGame(rom) { localStorage.setItem('k_rom_v36', rom); window.location.reload(); }
+
+function swapGame(rom) { 
+    localStorage.setItem('k_rom_v36', rom); 
+    sessionStorage.setItem('skip_boot', 'true'); // Remembers we just changed a game
+    window.location.reload(); 
+}
+
 var EJS_player = '#gb-screen'; var EJS_core = 'gbc'; var EJS_gameUrl = activeRom; var EJS_pathtodata = 'https://cdn.emulatorjs.org/latest/data/';
+
+// --- GAME SWAP FAST-PASS (SKIPS BOOT SCREEN IF RESTARTING) ---
+window.addEventListener('DOMContentLoaded', () => {
+    if (sessionStorage.getItem('skip_boot') === 'true') {
+        sessionStorage.removeItem('skip_boot'); // Clean up the memory
+        document.getElementById('pre-boot').style.display = 'none'; // Instantly hide the boot screen
+        openWin('gb-window'); // Instantly pop the Gameboy back open!
+    }
+});
 </script>
 <script src="https://cdn.emulatorjs.org/latest/data/loader.js"></script>
 </body>
